@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.internetplus.farm.order.dao.ProductInfoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.internetplus.farm.order.entity.ProductInfoEntity" id="productInfoMap">
+        <result property="productId" column="product_id"/>
+        <result property="productCode" column="product_code"/>
+        <result property="productName" column="product_name"/>
+        <result property="priceDifference" column="price_difference"/>
+        <result property="price" column="price"/>
+        <result property="supplierId" column="supplier_id"/>
+        <result property="freeNum" column="free_num"/>
+        <result property="supplyNum" column="supply_num"/>
+        <result property="totalNum" column="total_num"/>
+        <result property="perWeight" column="per_weight"/>
+        <result property="description" column="description"/>
+        <result property="publishStatus" column="publish_status"/>
+        <result property="auditStatus" column="audit_status"/>
+        <result property="
+place" column="
+place"/>
+        <result property="breed" column="breed"/>
+        <result property="isSpecial" column="is_special"/>
+        <result property="indate" column="indate"/>
+        <result property="modifiedTime" column="modified_time"/>
+    </resultMap>
+
+
+</mapper>

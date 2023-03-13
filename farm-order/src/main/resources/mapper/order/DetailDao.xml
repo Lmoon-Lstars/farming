@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.internetplus.farm.order.dao.DetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.internetplus.farm.order.entity.DetailEntity" id="detailMap">
+        <result property="orderDetailId" column="order_detail_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="productCnt" column="product_cnt"/>
+        <result property="productPrice" column="product_price"/>
+        <result property="weight" column="weight"/>
+        <result property="modifiedTime" column="modified_time"/>
+    </resultMap>
+
+
+</mapper>
