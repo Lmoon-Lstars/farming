@@ -1,3 +1,5 @@
+server:
+  port: 8000
 spring:
   datasource:
     username: root
@@ -5,7 +7,7 @@ spring:
     url: jdbc:mysql://localhost:3306/farm_order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
 mybatis-plus:
-  mapper-locations: classpath:/mapper/supplier/*.xml
+  mapper-locations: classpath:/mapper/order/*.xml
   global-config:
     db-config:
       id-type: auto

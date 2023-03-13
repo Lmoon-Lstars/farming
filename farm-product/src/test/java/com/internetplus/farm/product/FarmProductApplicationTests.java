@@ -1,5 +1,6 @@
 package com.internetplus.farm.product;
 
+import com.internetplus.farm.product.entity.InfoEntity;
 import com.internetplus.farm.product.service.InfoService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +17,8 @@ class FarmProductApplicationTests {
 
   @Test
   void contextLoads() {
-    int count = infoService.count();
-    System.out.println(count);
+    InfoEntity byId = infoService.getById(1);
+    System.out.println(byId);
   }
 
 }

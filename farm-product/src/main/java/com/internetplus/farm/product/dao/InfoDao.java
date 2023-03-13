@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
  * 
  * @author lcx
  * @email 1181153997@gmail.com
- * @date 2023-03-13 15:58:55
+ * @date 2023-03-13 16:42:29
  */
 @Mapper
 public interface InfoDao extends BaseMapper<InfoEntity> {

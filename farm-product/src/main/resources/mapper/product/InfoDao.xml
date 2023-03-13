@@ -18,9 +18,7 @@
         <result property="description" column="description"/>
         <result property="publishStatus" column="publish_status"/>
         <result property="auditStatus" column="audit_status"/>
-        <result property="
-place" column="
-place"/>
+        <result property="place" column="place"/>
         <result property="breed" column="breed"/>
         <result property="isSpecial" column="is_special"/>
         <result property="indate" column="indate"/>
