@@ -1,4 +1,4 @@
-package com.internetplus.farm.order.controller;
+package com.internetplus.farm.product.controller;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.internetplus.farm.order.entity.ProductInfoEntity;
-import com.internetplus.farm.order.service.ProductInfoService;
+import com.internetplus.farm.product.entity.InfoEntity;
+import com.internetplus.farm.product.service.InfoService;
 import com.internetplus.common.utils.PageUtils;
 import com.internetplus.common.utils.R;
 
@@ -22,20 +22,20 @@ import com.internetplus.common.utils.R;
  *
  * @author lcx
  * @email 1181153997@gmail.com
- * @date 2023-03-13 08:50:57
+ * @date 2023-03-13 15:58:55
  */
 @RestController
-@RequestMapping("order/productinfo")
-public class ProductInfoController {
+@RequestMapping("product/info")
+public class InfoController {
     @Autowired
-    private ProductInfoService productInfoService;
+    private InfoService infoService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = productInfoService.queryPage(params);
+        PageUtils page = infoService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -46,17 +46,17 @@ public class ProductInfoController {
      */
     @RequestMapping("/info/{productId}")
     public R info(@PathVariable("productId") Integer productId){
-		ProductInfoEntity productInfo = productInfoService.getById(productId);
+		InfoEntity info = infoService.getById(productId);
 
-        return R.ok().put("productInfo", productInfo);
+        return R.ok().put("info", info);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody ProductInfoEntity productInfo){
-		productInfoService.save(productInfo);
+    public R save(@RequestBody InfoEntity info){
+		infoService.save(info);
 
         return R.ok();
     }
@@ -65,8 +65,8 @@ public class ProductInfoController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody ProductInfoEntity productInfo){
-		productInfoService.updateById(productInfo);
+    public R update(@RequestBody InfoEntity info){
+		infoService.updateById(info);
 
         return R.ok();
     }
@@ -76,7 +76,7 @@ public class ProductInfoController {
      */
     @RequestMapping("/delete")
     public R delete(@RequestBody Integer[] productIds){
-		productInfoService.removeByIds(Arrays.asList(productIds));
+		infoService.removeByIds(Arrays.asList(productIds));
 
         return R.ok();
     }

@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    username: root
+    password: 1234
+    url: jdbc:mysql://localhost:3306/farm_order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis-plus:
+  mapper-locations: classpath:/mapper/supplier/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+      # 配置逻辑删除 1代表删除 0代表已删除
+      logic-delete-value: 1
+      logic-not-delete-value: 0

@@ -74,17 +74,17 @@
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.productPicId) {
             this.$http({
-              url: this.$http.adornUrl(`/order/productpicinfo/info/${this.dataForm.productPicId}`),
+              url: this.$http.adornUrl(`/product/picinfo/info/${this.dataForm.productPicId}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.productId = data.productPicInfo.productId
-                this.dataForm.picUrl = data.productPicInfo.picUrl
-                this.dataForm.isMaster = data.productPicInfo.isMaster
-                this.dataForm.picOrder = data.productPicInfo.picOrder
-                this.dataForm.picStatus = data.productPicInfo.picStatus
-                this.dataForm.modifiedTime = data.productPicInfo.modifiedTime
+                this.dataForm.productId = data.picInfo.productId
+                this.dataForm.picUrl = data.picInfo.picUrl
+                this.dataForm.isMaster = data.picInfo.isMaster
+                this.dataForm.picOrder = data.picInfo.picOrder
+                this.dataForm.picStatus = data.picInfo.picStatus
+                this.dataForm.modifiedTime = data.picInfo.modifiedTime
               }
             })
           }
@@ -95,7 +95,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/order/productpicinfo/${!this.dataForm.productPicId ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/product/picinfo/${!this.dataForm.productPicId ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'productPicId': this.dataForm.productPicId || undefined,

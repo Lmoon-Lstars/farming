@@ -155,30 +155,30 @@ place: [
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.productId) {
             this.$http({
-              url: this.$http.adornUrl(`/order/productinfo/info/${this.dataForm.productId}`),
+              url: this.$http.adornUrl(`/product/info/info/${this.dataForm.productId}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.productCode = data.productInfo.productCode
-                this.dataForm.productName = data.productInfo.productName
-                this.dataForm.priceDifference = data.productInfo.priceDifference
-                this.dataForm.price = data.productInfo.price
-                this.dataForm.supplierId = data.productInfo.supplierId
-                this.dataForm.freeNum = data.productInfo.freeNum
-                this.dataForm.supplyNum = data.productInfo.supplyNum
-                this.dataForm.totalNum = data.productInfo.totalNum
-                this.dataForm.perWeight = data.productInfo.perWeight
-                this.dataForm.description = data.productInfo.description
-                this.dataForm.publishStatus = data.productInfo.publishStatus
-                this.dataForm.auditStatus = data.productInfo.auditStatus
+                this.dataForm.productCode = data.info.productCode
+                this.dataForm.productName = data.info.productName
+                this.dataForm.priceDifference = data.info.priceDifference
+                this.dataForm.price = data.info.price
+                this.dataForm.supplierId = data.info.supplierId
+                this.dataForm.freeNum = data.info.freeNum
+                this.dataForm.supplyNum = data.info.supplyNum
+                this.dataForm.totalNum = data.info.totalNum
+                this.dataForm.perWeight = data.info.perWeight
+                this.dataForm.description = data.info.description
+                this.dataForm.publishStatus = data.info.publishStatus
+                this.dataForm.auditStatus = data.info.auditStatus
                 this.dataForm.
-place = data.productInfo.
+place = data.info.
 place
-                this.dataForm.breed = data.productInfo.breed
-                this.dataForm.isSpecial = data.productInfo.isSpecial
-                this.dataForm.indate = data.productInfo.indate
-                this.dataForm.modifiedTime = data.productInfo.modifiedTime
+                this.dataForm.breed = data.info.breed
+                this.dataForm.isSpecial = data.info.isSpecial
+                this.dataForm.indate = data.info.indate
+                this.dataForm.modifiedTime = data.info.modifiedTime
               }
             })
           }
@@ -189,7 +189,7 @@ place
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/order/productinfo/${!this.dataForm.productId ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/product/info/${!this.dataForm.productId ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'productId': this.dataForm.productId || undefined,

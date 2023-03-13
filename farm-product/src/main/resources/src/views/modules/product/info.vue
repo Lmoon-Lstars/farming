@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('order:productpicinfo:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('order:productpicinfo:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('product:info:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:info:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -23,40 +23,107 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="productPicId"
-        header-align="center"
-        align="center"
-        label="商品图片ID">
-      </el-table-column>
-      <el-table-column
         prop="productId"
         header-align="center"
         align="center"
         label="商品ID">
       </el-table-column>
       <el-table-column
-        prop="picUrl"
+        prop="productCode"
         header-align="center"
         align="center"
-        label="图片URL">
+        label="商品编码">
       </el-table-column>
       <el-table-column
-        prop="isMaster"
+        prop="productName"
         header-align="center"
         align="center"
-        label="是否主图:0.非主图1.主图">
+        label="商品名称">
       </el-table-column>
       <el-table-column
-        prop="picOrder"
+        prop="priceDifference"
         header-align="center"
         align="center"
-        label="图片排序">
+        label="价格差">
       </el-table-column>
       <el-table-column
-        prop="picStatus"
+        prop="price"
         header-align="center"
         align="center"
-        label="图片是否有效:0无效 1有效">
+        label="商品销售价格">
+      </el-table-column>
+      <el-table-column
+        prop="supplierId"
+        header-align="center"
+        align="center"
+        label="商品供应商id">
+      </el-table-column>
+      <el-table-column
+        prop="freeNum"
+        header-align="center"
+        align="center"
+        label="免费供应份数">
+      </el-table-column>
+      <el-table-column
+        prop="supplyNum"
+        header-align="center"
+        align="center"
+        label="正常供应份数">
+      </el-table-column>
+      <el-table-column
+        prop="totalNum"
+        header-align="center"
+        align="center"
+        label="总供应份数">
+      </el-table-column>
+      <el-table-column
+        prop="perWeight"
+        header-align="center"
+        align="center"
+        label="每份重量（克）">
+      </el-table-column>
+      <el-table-column
+        prop="description"
+        header-align="center"
+        align="center"
+        label="商品描述">
+      </el-table-column>
+      <el-table-column
+        prop="publishStatus"
+        header-align="center"
+        align="center"
+        label="上下架状态:0下架1上架">
+      </el-table-column>
+      <el-table-column
+        prop="auditStatus"
+        header-align="center"
+        align="center"
+        label="审核状态:0未审核,1已审核">
+      </el-table-column>
+      <el-table-column
+        prop="
+place"
+        header-align="center"
+        align="center"
+        label="产地">
+      </el-table-column>
+      <el-table-column
+        prop="breed"
+        header-align="center"
+        align="center"
+        label="品种">
+      </el-table-column>
+      <el-table-column
+        prop="isSpecial"
+        header-align="center"
+        align="center"
+        label="是否为特产:0不是，1是">
+      </el-table-column>
+      <el-table-column
+        prop="indate"
+        header-align="center"
+        align="center"
+        label="商品录入时间">
       </el-table-column>
       <el-table-column
         prop="modifiedTime"
@@ -71,8 +138,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.productPicId)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.productPicId)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.productId)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.productId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -91,7 +158,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './productpicinfo-add-or-update'
+  import AddOrUpdate from './info-add-or-update'
   export default {
     data () {
       return {
@@ -118,7 +185,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/order/productpicinfo/list'),
+          url: this.$http.adornUrl('/product/info/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -161,7 +228,7 @@
       // 删除
       deleteHandle (id) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.productPicId
+          return item.productId
         })
         this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
           confirmButtonText: '确定',
@@ -169,7 +236,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/order/productpicinfo/delete'),
+            url: this.$http.adornUrl('/product/info/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

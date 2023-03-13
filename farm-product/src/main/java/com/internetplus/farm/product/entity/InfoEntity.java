@@ -1,4 +1,4 @@
-package com.internetplus.farm.order.entity;
+package com.internetplus.farm.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -13,11 +13,11 @@ import lombok.Data;
  * 
  * @author lcx
  * @email 1181153997@gmail.com
- * @date 2023-03-13 08:50:57
+ * @date 2023-03-13 15:58:55
  */
 @Data
 @TableName("product_info")
-public class ProductInfoEntity implements Serializable {
+public class InfoEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

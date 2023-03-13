@@ -1,4 +1,4 @@
-package com.internetplus.farm.order.controller;
+package com.internetplus.farm.product.controller;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.internetplus.farm.order.entity.ProductPicInfoEntity;
-import com.internetplus.farm.order.service.ProductPicInfoService;
+import com.internetplus.farm.product.entity.PicInfoEntity;
+import com.internetplus.farm.product.service.PicInfoService;
 import com.internetplus.common.utils.PageUtils;
 import com.internetplus.common.utils.R;
 
@@ -22,20 +22,20 @@ import com.internetplus.common.utils.R;
  *
  * @author lcx
  * @email 1181153997@gmail.com
- * @date 2023-03-13 08:50:57
+ * @date 2023-03-13 15:58:55
  */
 @RestController
-@RequestMapping("order/productpicinfo")
-public class ProductPicInfoController {
+@RequestMapping("product/picinfo")
+public class PicInfoController {
     @Autowired
-    private ProductPicInfoService productPicInfoService;
+    private PicInfoService picInfoService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = productPicInfoService.queryPage(params);
+        PageUtils page = picInfoService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -46,17 +46,17 @@ public class ProductPicInfoController {
      */
     @RequestMapping("/info/{productPicId}")
     public R info(@PathVariable("productPicId") Integer productPicId){
-		ProductPicInfoEntity productPicInfo = productPicInfoService.getById(productPicId);
+		PicInfoEntity picInfo = picInfoService.getById(productPicId);
 
-        return R.ok().put("productPicInfo", productPicInfo);
+        return R.ok().put("picInfo", picInfo);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody ProductPicInfoEntity productPicInfo){
-		productPicInfoService.save(productPicInfo);
+    public R save(@RequestBody PicInfoEntity picInfo){
+		picInfoService.save(picInfo);
 
         return R.ok();
     }
@@ -65,8 +65,8 @@ public class ProductPicInfoController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody ProductPicInfoEntity productPicInfo){
-		productPicInfoService.updateById(productPicInfo);
+    public R update(@RequestBody PicInfoEntity picInfo){
+		picInfoService.updateById(picInfo);
 
         return R.ok();
     }
@@ -76,7 +76,7 @@ public class ProductPicInfoController {
      */
     @RequestMapping("/delete")
     public R delete(@RequestBody Integer[] productPicIds){
-		productPicInfoService.removeByIds(Arrays.asList(productPicIds));
+		picInfoService.removeByIds(Arrays.asList(productPicIds));
 
         return R.ok();
     }
