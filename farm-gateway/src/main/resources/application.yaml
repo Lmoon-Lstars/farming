@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: mall-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      routes:
+        - id: test_route
+          uri: http://www.baidu.com
+          predicates:
+            - Query=url,baidu
+        - id: qq_route
+          uri: http://www.qq.com
+          predicates:
+            - Query=url,qq
+        # lb: 所有mall-product的请求都会被截取掉 /api/
+        - id: product_route
+          uri: lb://mall-product
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+        - id: coupon_route
+          uri: lb://mall-coupon
+          predicates:
+            - Path=/api/coupon/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
