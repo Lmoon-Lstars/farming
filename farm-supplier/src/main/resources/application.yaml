@@ -1,11 +1,17 @@
 server:
-  port: 9500
+  port: 9600
 spring:
   datasource:
     username: root
     password: 1234
     url: jdbc:mysql://localhost:3306/farm_supplier?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  application:
+    name: farm-supplier
 mybatis-plus:
   mapper-locations: classpath:/mapper/supplier/*.xml
   global-config:

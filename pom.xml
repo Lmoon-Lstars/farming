@@ -17,6 +17,7 @@
     <module>renren-fast</module>
     <module>renren-generator</module>
     <module>farm-common</module>
+    <module>farm-gateway</module>
   </modules>
 
 
