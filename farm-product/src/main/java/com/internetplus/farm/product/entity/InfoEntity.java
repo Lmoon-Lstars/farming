@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 商品信息表
@@ -16,6 +17,7 @@ import lombok.Data;
  * @date 2023-03-13 16:42:29
  */
 @Data
+@ToString
 @TableName("product_info")
 public class InfoEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

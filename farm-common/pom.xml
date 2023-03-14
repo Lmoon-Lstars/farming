@@ -59,10 +59,11 @@
       <scope>provided</scope>
     </dependency>
     <!--    lombok-->
+<!--    版本修改为1.18.14从而解决了Data注解失效的问题-->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.24</version>
+      <version>1.18.14</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
