@@ -16,5 +16,7 @@ import java.util.Map;
 public interface PicInfoService extends IService<PicInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+    void savePicinfo(PicInfoEntity picInfo);
+    void updataPicinfo(PicInfoEntity picInfo);
 }
 

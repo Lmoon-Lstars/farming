@@ -56,7 +56,7 @@ public class PicInfoController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody PicInfoEntity picInfo){
-		picInfoService.save(picInfo);
+		picInfoService.savePicinfo(picInfo);
 
         return R.ok();
     }
@@ -66,7 +66,7 @@ public class PicInfoController {
      */
     @RequestMapping("/update")
     public R update(@RequestBody PicInfoEntity picInfo){
-		picInfoService.updateById(picInfo);
+		picInfoService.updataPicinfo(picInfo);
 
         return R.ok();
     }

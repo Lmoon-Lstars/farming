@@ -19,9 +19,6 @@
     <el-form-item label="图片是否有效:0无效 1有效" prop="picStatus">
       <el-input v-model="dataForm.picStatus" placeholder="图片是否有效:0无效 1有效"></el-input>
     </el-form-item>
-    <el-form-item label="最后修改时间" prop="modifiedTime">
-      <el-input v-model="dataForm.modifiedTime" placeholder="最后修改时间"></el-input>
-    </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -41,8 +38,7 @@
           picUrl: '',
           isMaster: '',
           picOrder: '',
-          picStatus: '',
-          modifiedTime: ''
+          picStatus: ''
         },
         dataRule: {
           productId: [
@@ -59,9 +55,6 @@
           ],
           picStatus: [
             { required: true, message: '图片是否有效:0无效 1有效不能为空', trigger: 'blur' }
-          ],
-          modifiedTime: [
-            { required: true, message: '最后修改时间不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -84,7 +77,6 @@
                 this.dataForm.isMaster = data.picInfo.isMaster
                 this.dataForm.picOrder = data.picInfo.picOrder
                 this.dataForm.picStatus = data.picInfo.picStatus
-                this.dataForm.modifiedTime = data.picInfo.modifiedTime
               }
             })
           }
@@ -104,7 +96,6 @@
                 'isMaster': this.dataForm.isMaster,
                 'picOrder': this.dataForm.picOrder,
                 'picStatus': this.dataForm.picStatus,
-                'modifiedTime': this.dataForm.modifiedTime
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

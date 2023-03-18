@@ -1,5 +1,7 @@
 package com.internetplus.farm.product.service.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -26,4 +28,19 @@ public class InfoServiceImpl extends ServiceImpl<InfoDao, InfoEntity> implements
         return new PageUtils(page);
     }
 
+    @Override
+    public void saveInfo(InfoEntity info) {
+        info.setPriceDifference(new BigDecimal("0"));
+        info.setModifiedTime(new Date());
+        info.setIndate(new Date());
+        System.out.println("免费供应数目为："+info.getFreeNum());
+        info.setTotalNum(info.getFreeNum()+info.getSupplyNum());
+        this.save(info);
+    }
+
+    @Override
+    public void updateInfo(InfoEntity info) {
+        info.setModifiedTime(new Date());
+        this.updateById(info);
+    }
 }

@@ -14,7 +14,8 @@ import java.util.Map;
  * @date 2023-03-13 16:42:29
  */
 public interface InfoService extends IService<InfoEntity> {
-
     PageUtils queryPage(Map<String, Object> params);
+    void saveInfo(InfoEntity info);
+    void updateInfo(InfoEntity info);
 }
 

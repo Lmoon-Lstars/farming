@@ -53,7 +53,7 @@ public class InfoController {
    */
   @RequestMapping("/save")
   public R save(@RequestBody InfoEntity info) {
-    infoService.save(info);
+    infoService.saveInfo(info);
 
     return R.ok();
   }
@@ -63,7 +63,7 @@ public class InfoController {
    */
   @RequestMapping("/update")
   public R update(@RequestBody InfoEntity info) {
-    infoService.updateById(info);
+    infoService.updateInfo(info);
 
     return R.ok();
   }

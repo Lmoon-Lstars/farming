@@ -10,9 +10,6 @@
     <el-form-item label="商品名称" prop="productName">
       <el-input v-model="dataForm.productName" placeholder="商品名称"></el-input>
     </el-form-item>
-    <el-form-item label="价格差" prop="priceDifference">
-      <el-input v-model="dataForm.priceDifference" placeholder="价格差"></el-input>
-    </el-form-item>
     <el-form-item label="商品销售价格" prop="price">
       <el-input v-model="dataForm.price" placeholder="商品销售价格"></el-input>
     </el-form-item>
@@ -24,9 +21,6 @@
     </el-form-item>
     <el-form-item label="正常供应份数" prop="supplyNum">
       <el-input v-model="dataForm.supplyNum" placeholder="正常供应份数"></el-input>
-    </el-form-item>
-    <el-form-item label="总供应份数" prop="totalNum">
-      <el-input v-model="dataForm.totalNum" placeholder="总供应份数"></el-input>
     </el-form-item>
     <el-form-item label="每份重量（克）" prop="perWeight">
       <el-input v-model="dataForm.perWeight" placeholder="每份重量（克）"></el-input>
@@ -49,12 +43,6 @@
     <el-form-item label="是否为特产:0不是，1是" prop="isSpecial">
       <el-input v-model="dataForm.isSpecial" placeholder="是否为特产:0不是，1是"></el-input>
     </el-form-item>
-    <el-form-item label="商品录入时间" prop="indate">
-      <el-input v-model="dataForm.indate" placeholder="商品录入时间"></el-input>
-    </el-form-item>
-    <el-form-item label="最后修改时间" prop="modifiedTime">
-      <el-input v-model="dataForm.modifiedTime" placeholder="最后修改时间"></el-input>
-    </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -72,21 +60,17 @@
           productId: 0,
           productCode: '',
           productName: '',
-          priceDifference: '',
           price: '',
           supplierId: '',
           freeNum: '',
           supplyNum: '',
-          totalNum: '',
           perWeight: '',
           description: '',
           publishStatus: '',
           auditStatus: '',
           place: '',
           breed: '',
-          isSpecial: '',
-          indate: '',
-          modifiedTime: ''
+          isSpecial: ''
         },
         dataRule: {
           productCode: [
@@ -94,9 +78,6 @@
           ],
           productName: [
             { required: true, message: '商品名称不能为空', trigger: 'blur' }
-          ],
-          priceDifference: [
-            { required: true, message: '价格差不能为空', trigger: 'blur' }
           ],
           price: [
             { required: true, message: '商品销售价格不能为空', trigger: 'blur' }
@@ -109,9 +90,6 @@
           ],
           supplyNum: [
             { required: true, message: '正常供应份数不能为空', trigger: 'blur' }
-          ],
-          totalNum: [
-            { required: true, message: '总供应份数不能为空', trigger: 'blur' }
           ],
           perWeight: [
             { required: true, message: '每份重量（克）不能为空', trigger: 'blur' }
@@ -133,12 +111,6 @@
           ],
           isSpecial: [
             { required: true, message: '是否为特产:0不是，1是不能为空', trigger: 'blur' }
-          ],
-          indate: [
-            { required: true, message: '商品录入时间不能为空', trigger: 'blur' }
-          ],
-          modifiedTime: [
-            { required: true, message: '最后修改时间不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -158,12 +130,10 @@
               if (data && data.code === 0) {
                 this.dataForm.productCode = data.info.productCode
                 this.dataForm.productName = data.info.productName
-                this.dataForm.priceDifference = data.info.priceDifference
                 this.dataForm.price = data.info.price
                 this.dataForm.supplierId = data.info.supplierId
                 this.dataForm.freeNum = data.info.freeNum
                 this.dataForm.supplyNum = data.info.supplyNum
-                this.dataForm.totalNum = data.info.totalNum
                 this.dataForm.perWeight = data.info.perWeight
                 this.dataForm.description = data.info.description
                 this.dataForm.publishStatus = data.info.publishStatus
@@ -171,8 +141,6 @@
                 this.dataForm.place = data.info.place
                 this.dataForm.breed = data.info.breed
                 this.dataForm.isSpecial = data.info.isSpecial
-                this.dataForm.indate = data.info.indate
-                this.dataForm.modifiedTime = data.info.modifiedTime
               }
             })
           }
@@ -189,12 +157,10 @@
                 'productId': this.dataForm.productId || undefined,
                 'productCode': this.dataForm.productCode,
                 'productName': this.dataForm.productName,
-                'priceDifference': this.dataForm.priceDifference,
                 'price': this.dataForm.price,
                 'supplierId': this.dataForm.supplierId,
                 'freeNum': this.dataForm.freeNum,
                 'supplyNum': this.dataForm.supplyNum,
-                'totalNum': this.dataForm.totalNum,
                 'perWeight': this.dataForm.perWeight,
                 'description': this.dataForm.description,
                 'publishStatus': this.dataForm.publishStatus,
@@ -202,8 +168,6 @@
                 'place': this.dataForm.place,
                 'breed': this.dataForm.breed,
                 'isSpecial': this.dataForm.isSpecial,
-                'indate': this.dataForm.indate,
-                'modifiedTime': this.dataForm.modifiedTime
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

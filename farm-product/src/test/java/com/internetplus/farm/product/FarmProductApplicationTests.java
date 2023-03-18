@@ -2,7 +2,7 @@ package com.internetplus.farm.product;
 
 import com.internetplus.farm.product.entity.InfoEntity;
 import com.internetplus.farm.product.service.InfoService;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

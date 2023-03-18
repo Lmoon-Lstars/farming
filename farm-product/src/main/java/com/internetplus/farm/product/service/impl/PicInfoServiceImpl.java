@@ -1,5 +1,6 @@
 package com.internetplus.farm.product.service.impl;
 
+import java.util.Date;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -24,6 +25,18 @@ public class PicInfoServiceImpl extends ServiceImpl<PicInfoDao, PicInfoEntity> i
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public void savePicinfo(PicInfoEntity picInfo) {
+        picInfo.setModifiedTime(new Date());
+        this.savePicinfo(picInfo);
+    }
+
+    @Override
+    public void updataPicinfo(PicInfoEntity picInfo) {
+        picInfo.setModifiedTime(new Date());
+        this.updateById(picInfo);
     }
 
 }
