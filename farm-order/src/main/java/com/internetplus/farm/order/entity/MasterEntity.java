@@ -44,15 +44,15 @@ public class MasterEntity implements Serializable {
 	/**
 	 * 收货人所在省
 	 */
-	private Integer province;
+	private String province;
 	/**
 	 * 收货人所在市
 	 */
-	private Integer city;
+	private String city;
 	/**
 	 * 收货人所在区
 	 */
-	private Integer district;
+	private String district;
 	/**
 	 * 收货人详细地址
 	 */

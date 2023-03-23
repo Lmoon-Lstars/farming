@@ -1,5 +1,6 @@
 package com.internetplus.farm.order.service.impl;
 
+import java.util.Date;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -15,6 +16,13 @@ import com.internetplus.farm.order.service.MasterService;
 
 @Service("masterService")
 public class MasterServiceImpl extends ServiceImpl<MasterDao, MasterEntity> implements MasterService {
+
+    @Override
+    public void saveOrder(MasterEntity master) {
+        master.setCreateTime(new Date());
+        master.setModifiedTime(new Date());
+        this.save(master);
+    }
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {

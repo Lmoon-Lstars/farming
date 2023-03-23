@@ -36,13 +36,18 @@ spring:
             - Path=/api/order/**
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
+        - id: user_route
+          uri: lb://farm-user
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
         - id: admin_route
           uri: lb://renren-fast
           predicates:
             - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>.*), /renren-fast/$\{segment}
-
         - id: coupon_route
           uri: lb://farm-supplier
           predicates:

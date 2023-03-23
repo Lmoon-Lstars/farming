@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.internetplus.farm.user.dao.AddressDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.internetplus.farm.user.entity.AddressEntity" id="addressMap">
+        <result property="addressId" column="address_id"/>
+        <result property="shippingUser" column="shipping_user"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="district" column="district"/>
+        <result property="address" column="address"/>
+        <result property="userInfoId" column="user_info_id"/>
+    </resultMap>
+
+
+</mapper>

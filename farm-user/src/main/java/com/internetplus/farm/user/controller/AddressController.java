@@ -1,4 +1,4 @@
-package com.internetplus.farm.order.controller;
+package com.internetplus.farm.user.controller;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -10,32 +10,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.internetplus.farm.order.entity.MasterEntity;
-import com.internetplus.farm.order.service.MasterService;
+import com.internetplus.farm.user.entity.AddressEntity;
+import com.internetplus.farm.user.service.AddressService;
 import com.internetplus.common.utils.PageUtils;
 import com.internetplus.common.utils.R;
 
 
 
 /**
- * 订单主表
+ * 
  *
- * @author lcx
+ * @author wrk
  * @email 1181153997@gmail.com
- * @date 2023-03-13 08:47:57
+ * @date 2023-03-22 14:52:47
  */
 @RestController
-@RequestMapping("order/master")
-public class MasterController {
+@RequestMapping("user/address")
+public class AddressController {
     @Autowired
-    private MasterService masterService;
+    private AddressService addressService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = masterService.queryPage(params);
+        PageUtils page = addressService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -44,19 +44,19 @@ public class MasterController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{orderId}")
-    public R info(@PathVariable("orderId") Integer orderId){
-		MasterEntity master = masterService.getById(orderId);
+    @RequestMapping("/info/{addressId}")
+    public R info(@PathVariable("addressId") Integer addressId){
+		AddressEntity address = addressService.getById(addressId);
 
-        return R.ok().put("master", master);
+        return R.ok().put("address", address);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody MasterEntity master){
-		masterService.saveOrder(master);
+    public R save(@RequestBody AddressEntity address){
+		addressService.save(address);
 
         return R.ok();
     }
@@ -65,8 +65,8 @@ public class MasterController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody MasterEntity master){
-		masterService.updateById(master);
+    public R update(@RequestBody AddressEntity address){
+		addressService.updateById(address);
 
         return R.ok();
     }
@@ -75,8 +75,8 @@ public class MasterController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Integer[] orderIds){
-		masterService.removeByIds(Arrays.asList(orderIds));
+    public R delete(@RequestBody Integer[] addressIds){
+		addressService.removeByIds(Arrays.asList(addressIds));
 
         return R.ok();
     }
