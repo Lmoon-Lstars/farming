@@ -14,7 +14,7 @@ spring:
     name: farm-user
 logging:
   level:
-    com.internetplus.farm.product: debug
+    com.internetplus.farm.product: info
 mybatis-plus:
   mapper-locations: classpath:/mapper/product/*.xml
   global-config:

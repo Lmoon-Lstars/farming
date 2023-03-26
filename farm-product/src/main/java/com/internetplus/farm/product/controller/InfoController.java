@@ -41,11 +41,18 @@ public class InfoController {
   /**
    * 信息
    */
-  @RequestMapping("/info/{productId}")
-  public R info(@PathVariable("productId") Integer productId) {
+//  @RequestMapping("/info/{productId}")
+//  public R info(@PathVariable("productId") Integer productId) {
+//    InfoEntity info = infoService.getById(productId);
+//
+//    return R.ok().put("info", info);
+//  }
+
+  @RequestMapping("/info")
+  public InfoEntity info(@RequestParam("productId") Integer productId) {
     InfoEntity info = infoService.getById(productId);
 
-    return R.ok().put("info", info);
+    return info;
   }
 
   /**
@@ -62,10 +69,8 @@ public class InfoController {
    * 修改
    */
   @RequestMapping("/update")
-  public R update(@RequestBody InfoEntity info) {
+  public void update(@RequestBody InfoEntity info) {
     infoService.updateInfo(info);
-
-    return R.ok();
   }
 
   /**

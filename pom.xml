@@ -15,7 +15,7 @@
     <module>farm-product</module>
     <module>farm-supplier</module>
     <module>renren-fast</module>
-<!--    <module>renren-generator</module>-->
+    <module>renren-generator</module>
     <module>farm-common</module>
     <module>farm-gateway</module>
     <module>farm-user</module>

@@ -1,6 +1,9 @@
 package com.internetplus.farm.order.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,4 +84,23 @@ public class MasterController {
         return R.ok();
     }
 
+    /**
+     * 查询订单信息
+     */
+    @RequestMapping("/listOrder")
+    public List listOrder(@RequestParam("userId")String userId,@RequestParam("orderStatus")String orderStatus) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("order_status",Integer.valueOf(orderStatus));
+        wrapper.eq("customer_id",Integer.valueOf(userId));
+        List<MasterEntity> masterList = masterService.list(wrapper);
+        return masterList;
+    }
+
+    /**
+     * 下单
+     */
+    @RequestMapping("/settlement")
+    public R settlement(@RequestParam("userId")String userId,@RequestParam("addressId")String addressId,@RequestParam("orderId")String orderId,@RequestParam("cuponId")String cuponId) {
+        return R.ok();
+    }
 }

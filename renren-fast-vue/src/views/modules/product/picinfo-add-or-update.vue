@@ -95,7 +95,7 @@
                 'picUrl': this.dataForm.picUrl,
                 'isMaster': this.dataForm.isMaster,
                 'picOrder': this.dataForm.picOrder,
-                'picStatus': this.dataForm.picStatus,
+                'picStatus': this.dataForm.picStatus
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

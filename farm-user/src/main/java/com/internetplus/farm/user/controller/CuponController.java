@@ -1,8 +1,12 @@
 package com.internetplus.farm.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,6 +83,35 @@ public class CuponController {
 		cuponService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
+    }
+
+    /**
+     * 查看优惠券
+     */
+    @RequestMapping("/listCupon")
+    public List listCupon(@RequestParam("userId")String userId, @RequestParam("status")String status) {
+        //0:未开始，1:过期，2:有效
+        Date date = new Date();
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("user_info_id",userId);
+        List<CuponEntity> cuponList = cuponService.list(queryWrapper);
+        for (CuponEntity cuponEntity : cuponList) {
+            if(cuponEntity.getStartTime().after(date)) { //未到开始时间
+                cuponEntity.setCuponStatu(0);
+            } else {
+                if(cuponEntity.getEndTime().before(date)) { //过期
+                    cuponEntity.setCuponStatu(1);
+                } else {
+                    cuponEntity.setCuponStatu(2);
+                }
+            }
+            cuponService.updateById(cuponEntity);
+        }
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("user_info_id",userId);
+        wrapper.eq("cupon_statu",Integer.valueOf(status));
+        List<CuponEntity> list = cuponService.list(wrapper);
+        return list;
     }
 
 }

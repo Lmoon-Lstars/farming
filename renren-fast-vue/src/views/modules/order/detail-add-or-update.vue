@@ -22,9 +22,6 @@
     <el-form-item label="商品重量" prop="weight">
       <el-input v-model="dataForm.weight" placeholder="商品重量"></el-input>
     </el-form-item>
-    <el-form-item label="最后修改时间" prop="modifiedTime">
-      <el-input v-model="dataForm.modifiedTime" placeholder="最后修改时间"></el-input>
-    </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -45,8 +42,7 @@
           productName: '',
           productCnt: '',
           productPrice: '',
-          weight: '',
-          modifiedTime: ''
+          weight: ''
         },
         dataRule: {
           orderId: [
@@ -66,9 +62,6 @@
           ],
           weight: [
             { required: true, message: '商品重量不能为空', trigger: 'blur' }
-          ],
-          modifiedTime: [
-            { required: true, message: '最后修改时间不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -92,7 +85,6 @@
                 this.dataForm.productCnt = data.detail.productCnt
                 this.dataForm.productPrice = data.detail.productPrice
                 this.dataForm.weight = data.detail.weight
-                this.dataForm.modifiedTime = data.detail.modifiedTime
               }
             })
           }
@@ -112,8 +104,7 @@
                 'productName': this.dataForm.productName,
                 'productCnt': this.dataForm.productCnt,
                 'productPrice': this.dataForm.productPrice,
-                'weight': this.dataForm.weight,
-                'modifiedTime': this.dataForm.modifiedTime
+                'weight': this.dataForm.weight
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

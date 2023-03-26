@@ -1,6 +1,8 @@
 package com.internetplus.farm.order.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +81,17 @@ public class DetailController {
 		detailService.removeByIds(Arrays.asList(orderDetailIds));
 
         return R.ok();
+    }
+
+    /**
+     * 查看订单详情
+     */
+    @RequestMapping("/listDetail")
+    public List listDetail(@RequestParam("orderId")String orderId) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("order_id",Integer.valueOf(orderId));
+        List<DetailEntity> list = detailService.list(wrapper);
+        return list;
     }
 
 }

@@ -49,9 +49,6 @@
     <el-form-item label="快递单号" prop="shippingSn">
       <el-input v-model="dataForm.shippingSn" placeholder="快递单号"></el-input>
     </el-form-item>
-    <el-form-item label="下单时间" prop="createTime">
-      <el-input v-model="dataForm.createTime" placeholder="下单时间"></el-input>
-    </el-form-item>
     <el-form-item label="发货时间" prop="shippingTime">
       <el-input v-model="dataForm.shippingTime" placeholder="发货时间"></el-input>
     </el-form-item>
@@ -66,9 +63,6 @@
     </el-form-item>
     <el-form-item label="发票抬头" prop="invoiceTitle">
       <el-input v-model="dataForm.invoiceTitle" placeholder="发票抬头"></el-input>
-    </el-form-item>
-    <el-form-item label="最后修改时间" prop="modifiedTime">
-      <el-input v-model="dataForm.modifiedTime" placeholder="最后修改时间"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -100,7 +94,6 @@
           paymentMoney: '',
           shippingCompName: '',
           shippingSn: '',
-          createTime: '',
           shippingTime: '',
           payTime: '',
           receiveTime: '',
@@ -154,9 +147,6 @@
           shippingSn: [
             { required: true, message: '快递单号不能为空', trigger: 'blur' }
           ],
-          createTime: [
-            { required: true, message: '下单时间不能为空', trigger: 'blur' }
-          ],
           shippingTime: [
             { required: true, message: '发货时间不能为空', trigger: 'blur' }
           ],
@@ -171,9 +161,6 @@
           ],
           invoiceTitle: [
             { required: true, message: '发票抬头不能为空', trigger: 'blur' }
-          ],
-          modifiedTime: [
-            { required: true, message: '最后修改时间不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -206,13 +193,11 @@
                 this.dataForm.paymentMoney = data.master.paymentMoney
                 this.dataForm.shippingCompName = data.master.shippingCompName
                 this.dataForm.shippingSn = data.master.shippingSn
-                this.dataForm.createTime = data.master.createTime
                 this.dataForm.shippingTime = data.master.shippingTime
                 this.dataForm.payTime = data.master.payTime
                 this.dataForm.receiveTime = data.master.receiveTime
                 this.dataForm.orderStatus = data.master.orderStatus
                 this.dataForm.invoiceTitle = data.master.invoiceTitle
-                this.dataForm.modifiedTime = data.master.modifiedTime
               }
             })
           }
@@ -242,13 +227,11 @@
                 'paymentMoney': this.dataForm.paymentMoney,
                 'shippingCompName': this.dataForm.shippingCompName,
                 'shippingSn': this.dataForm.shippingSn,
-                'createTime': this.dataForm.createTime,
                 'shippingTime': this.dataForm.shippingTime,
                 'payTime': this.dataForm.payTime,
                 'receiveTime': this.dataForm.receiveTime,
                 'orderStatus': this.dataForm.orderStatus,
                 'invoiceTitle': this.dataForm.invoiceTitle,
-                'modifiedTime': this.dataForm.modifiedTime
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

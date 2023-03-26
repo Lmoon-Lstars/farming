@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('user:address:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('user:address:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -23,40 +23,46 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="commentId"
+        prop="addressId"
         header-align="center"
         align="center"
-        label="评论id">
+        label="">
       </el-table-column>
       <el-table-column
-        prop="content"
+        prop="shippingUser"
         header-align="center"
         align="center"
-        label="评论内容">
+        label="">
       </el-table-column>
       <el-table-column
-        prop="userId"
+        prop="province"
         header-align="center"
         align="center"
-        label="评论者id">
+        label="">
       </el-table-column>
       <el-table-column
-        prop="productId"
+        prop="city"
         header-align="center"
         align="center"
-        label="评论商品id">
+        label="">
       </el-table-column>
       <el-table-column
-        prop="pid"
+        prop="district"
         header-align="center"
         align="center"
-        label="评论父id">
+        label="">
       </el-table-column>
       <el-table-column
-        prop="replyUserId"
+        prop="address"
         header-align="center"
         align="center"
-        label="被评论人id">
+        label="">
+      </el-table-column>
+      <el-table-column
+        prop="userInfoId"
+        header-align="center"
+        align="center"
+        label="">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -65,8 +71,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.commentId)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.commentId)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.addressId)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.addressId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -85,7 +91,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './commentinfo-add-or-update'
+  import AddOrUpdate from './address-add-or-update'
   export default {
     data () {
       return {
@@ -112,7 +118,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/order/commentinfo/list'),
+          url: this.$http.adornUrl('/user/address/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -155,7 +161,7 @@
       // 删除
       deleteHandle (id) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.commentId
+          return item.addressId
         })
         this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
           confirmButtonText: '确定',
@@ -163,7 +169,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/order/commentinfo/delete'),
+            url: this.$http.adornUrl('/user/address/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

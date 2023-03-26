@@ -167,7 +167,7 @@
                 'auditStatus': this.dataForm.auditStatus,
                 'place': this.dataForm.place,
                 'breed': this.dataForm.breed,
-                'isSpecial': this.dataForm.isSpecial,
+                'isSpecial': this.dataForm.isSpecial
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

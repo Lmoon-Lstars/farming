@@ -43,6 +43,12 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+<!--    业务依赖-->
+    <dependency>
+      <groupId>com.internetplus.farm</groupId>
+      <artifactId>farm-product</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>

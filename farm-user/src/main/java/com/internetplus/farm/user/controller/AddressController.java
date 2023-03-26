@@ -56,8 +56,7 @@ public class AddressController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody AddressEntity address){
-		addressService.save(address);
-
+		    addressService.save(address);
         return R.ok();
     }
 
