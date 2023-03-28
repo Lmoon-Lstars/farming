@@ -1,8 +1,16 @@
 package com.internetplus.farm.order.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import java.util.ArrayList;
+import com.internetplus.farm.order.client.ProductService;
+import com.internetplus.farm.order.client.UserService;
+import com.internetplus.farm.order.entity.DetailEntity;
+import com.internetplus.farm.order.service.DetailService;
+import com.internetplus.farm.user.entity.AddressEntity;
+import com.internetplus.farm.user.entity.CartEntity;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +40,15 @@ import com.internetplus.common.utils.R;
 public class MasterController {
     @Autowired
     private MasterService masterService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private DetailService detailService;
+
+    @Autowired
+    private ProductService productService;
 
     /**
      * 列表
@@ -100,7 +117,39 @@ public class MasterController {
      * 下单
      */
     @RequestMapping("/settlement")
-    public R settlement(@RequestParam("userId")String userId,@RequestParam("addressId")String addressId,@RequestParam("orderId")String orderId,@RequestParam("cuponId")String cuponId) {
+    public R settlement(@RequestParam("userId")String userId,@RequestParam("addressId")String addressId,@RequestParam("cuponId")String cuponId,@RequestParam("sum")String sum,@RequestParam("shippingMoney")String shippingMoney) {
+        MasterEntity master = new MasterEntity();
+        String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()).toString();
+        master.setOrderSn(Long.valueOf(date));
+        master.setCustomerId(Integer.valueOf(userId));
+        AddressEntity address = userService.getInfo(addressId);
+        master.setShippingUser(address.getShippingUser());
+        master.setProvince(address.getProvince());
+        master.setCity(address.getCity());
+        master.setDistrict(address.getDistrict());
+        master.setAddress(address.getAddress());
+        master.setOrderMoney(new BigDecimal(sum));
+        int cuponMoney = 0;
+        if(!cuponId.equals("null")) {
+            cuponMoney = userService.getCuponInfo(cuponId).getCuponAmount();
+            master.setDistrictMoney(new BigDecimal(userService.getCuponInfo(cuponId).getCuponAmount().toString()));
+        }
+        master.setShippingMoney(new BigDecimal(shippingMoney));
+        master.setPaymentMoney(master.getOrderMoney().subtract(new BigDecimal(String.valueOf(cuponMoney))).add(master.getShippingMoney()));
+        master.setCreateTime(new Date());
+        master.setOrderStatus(1);
+        masterService.save(master);
+        List<CartEntity> list = userService.getCartInfo(userId);
+        for (CartEntity cart : list) {
+            DetailEntity detail = new DetailEntity();
+            detail.setOrderId(master.getOrderId());
+            detail.setProductId(cart.getProductId());
+            detail.setProductName(productService.info(cart.getProductId()).getProductName());
+            detail.setProductCnt(cart.getQuantity());
+            detail.setProductPrice(productService.info(cart.getProductId()).getPrice());
+            detail.setWeight(Double.valueOf(productService.info(cart.getProductId()).getPerWeight() * cart.getQuantity()));
+            detailService.save(detail);
+        }
         return R.ok();
     }
 }

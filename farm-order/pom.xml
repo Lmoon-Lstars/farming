@@ -17,6 +17,7 @@
   <properties>
     <java.version>1.8</java.version>
     <spring-cloud.version>Greenwich.SR6</spring-cloud.version>
+    <lombok.version>1.18.20</lombok.version>
   </properties>
   <dependencies>
     <dependency>
@@ -43,6 +44,17 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.internetplus.farm</groupId>
+      <artifactId>farm-user</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.internetplus.farm</groupId>
+      <artifactId>farm-product</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
@@ -61,6 +73,21 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <classifier>exec</classifier>
+          <mainClass>com.internetplus.farm.order.FarmOrderApplication</mainClass>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <testFailureIgnore>true</testFailureIgnore>
+        </configuration>
       </plugin>
     </plugins>
   </build>

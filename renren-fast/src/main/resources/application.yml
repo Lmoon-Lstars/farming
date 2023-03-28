@@ -45,7 +45,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: aitmaker.cn:8848
 #  resources:
 #    add-mappings: false
 

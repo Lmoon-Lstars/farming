@@ -1,7 +1,6 @@
 package com.internetplus.farm.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.internetplus.farm.product.service.InfoService;
 import com.internetplus.farm.user.client.ProductService;
 import com.internetplus.farm.user.entity.InfoEntity;
 import java.io.PrintWriter;
@@ -165,5 +164,15 @@ public class CartController {
             sum = sum.add(price.multiply(num));
         }
         return sum;
+    }
+
+    /**
+     * 获取用户购物车信息
+     */
+    @RequestMapping("/getCartInfo")
+    public List<CartEntity> getCartInfo(@RequestParam("userId")String userId) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("user_id",userId);
+        return cartService.list(wrapper);
     }
 }

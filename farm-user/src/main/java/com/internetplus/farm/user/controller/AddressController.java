@@ -1,5 +1,6 @@
 package com.internetplus.farm.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -80,4 +81,13 @@ public class AddressController {
         return R.ok();
     }
 
+    /**
+     * 获取地址
+     */
+    @RequestMapping("/getInfo")
+    public AddressEntity getInfo(@RequestParam("addressId")String addressId) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("address_id",addressId);
+        return addressService.getOne(wrapper);
+    }
 }

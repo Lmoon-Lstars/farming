@@ -86,6 +86,16 @@ public class CuponController {
     }
 
     /**
+     * 获取优惠券信息
+     */
+    @RequestMapping("/getInfo")
+    public CuponEntity getCuponInfo(@RequestParam("cuponId")String cuponId) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("id",cuponId);
+        return cuponService.getOne(wrapper);
+    }
+
+    /**
      * 查看优惠券
      */
     @RequestMapping("/listCupon")

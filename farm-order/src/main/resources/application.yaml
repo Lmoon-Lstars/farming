@@ -1,15 +1,15 @@
 server:
-  port: 8000
+  port: 8100
 spring:
   datasource:
-    username: root
+    username: farm_order
     password: 1234
-    url: jdbc:mysql://localhost:3306/farm_order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://aitmaker.cn:3306/farm_order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: aitmaker.cn:8848
   application:
     name: farm-order
 mybatis-plus:

@@ -231,7 +231,7 @@
                 'payTime': this.dataForm.payTime,
                 'receiveTime': this.dataForm.receiveTime,
                 'orderStatus': this.dataForm.orderStatus,
-                'invoiceTitle': this.dataForm.invoiceTitle,
+                'invoiceTitle': this.dataForm.invoiceTitle
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

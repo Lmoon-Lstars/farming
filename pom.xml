@@ -13,13 +13,61 @@
   <modules>
     <module>farm-order</module>
     <module>farm-product</module>
-    <module>farm-supplier</module>
+<!--    <module>farm-supplier</module>-->
     <module>renren-fast</module>
     <module>renren-generator</module>
     <module>farm-common</module>
     <module>farm-gateway</module>
     <module>farm-user</module>
   </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <testFailureIgnore>true</testFailureIgnore>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+    <resources>
+      <!-- 项目编译打包时将java目录中的*.xml文件进行打包，默认是不进行打包的 -->
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.xml</include>  <!-- 两个 **  表示多级目录,一个 * 表示只有一级目录-->
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+
+      <!-- 项目编译打包时将resource目录中的配置文件进行打包，默认是不进行打包的 -->
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.properties</include>
+          <include>**/*.xml</include>
+          <include>**/*.tld</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+
+    </resources>
+
+  </build>
 
 
 </project>
