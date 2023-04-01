@@ -26,8 +26,9 @@
         <result property="payTime" column="pay_time"/>
         <result property="receiveTime" column="receive_time"/>
         <result property="orderStatus" column="order_status"/>
-        <result property="invoiceTitle" column="invoice_title"/>
+        <result property="remark" column="remark"/>
         <result property="modifiedTime" column="modified_time"/>
+        <result property="phoneNumber" column="phone_number"/>
     </resultMap>
 
 

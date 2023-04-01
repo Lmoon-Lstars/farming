@@ -6749,7 +6749,7 @@ var Operation = module.exports = function (parent, scheme, operationId, httpMeth
       this.host = window.location.host;
     }
     else {
-      this.host = 'localhost';
+      this.host = 'aitmaker.cn';
     }
   }
   this.parameterMacro = parent.parameterMacro || function (operation, parameter) {
@@ -22789,8 +22789,8 @@ SwaggerUi.Views.MainView = Backbone.View.extend({
     if ('validatorUrl' in opts.swaggerOptions) {
       // Validator URL specified explicitly
       this.model.validatorUrl = opts.swaggerOptions.validatorUrl;
-    } else if (this.model.url.indexOf('localhost') > 0 || this.model.url.indexOf('127.0.0.1') > 0) {
-      // Localhost override
+    } else if (this.model.url.indexOf('aitmaker.cn') > 0 || this.model.url.indexOf('127.0.0.1') > 0) {
+      // aitmaker.cn override
       this.model.validatorUrl = null;
     } else {
       this.model.validatorUrl = '//online.swagger.io/validator';

@@ -1,10 +1,15 @@
 package com.internetplus.farm.product.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.internetplus.common.utils.PageUtils;
 import com.internetplus.common.utils.R;
 import com.internetplus.farm.product.entity.InfoEntity;
 import com.internetplus.farm.product.service.InfoService;
+import com.internetplus.farm.product.service.PicInfoService;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +33,11 @@ public class InfoController {
   @Autowired
   private InfoService infoService;
 
+  @Autowired
+  private PicInfoService picInfoService;
+
   /**
-   * 列表
+   * 列表（后台管理系统）
    */
   @RequestMapping("/list")
   public R list(@RequestParam Map<String, Object> params) {
@@ -37,6 +45,59 @@ public class InfoController {
     return R.ok().put("page", page);
   }
 
+  /**
+   * 获取优惠商品
+   */
+  @RequestMapping("/getDiscount")
+  public List getDiscount() {
+    QueryWrapper wrapper = new QueryWrapper();
+    wrapper.eq("if_show",1);
+    List<InfoEntity> products = infoService.list(wrapper);
+    List<Map> res = new ArrayList<>();
+    for (InfoEntity product : products) {
+      Map<String,String> map = new HashMap<>();
+      QueryWrapper queryWrapper = new QueryWrapper();
+      queryWrapper.eq("product_id",product.getProductId());
+      map.put("id",String.valueOf(product.getProductId()));
+      map.put("picUrl",picInfoService.getOne(queryWrapper).getPicUrl());
+      map.put("name",product.getProductName());
+      map.put("disPrice",String.valueOf(product.getDisPrice()));
+      map.put("weight",String.valueOf(product.getPerWeight()));
+      map.put("supplyNum",String.valueOf(product.getSupplyNum()));
+      map.put("startTime",product.getStartTime().toString());
+      map.put("endTime",product.getEndTime().toString());
+      res.add(map);
+    }
+    return res;
+  }
+
+  /**
+   * 展示商品信息
+   */
+  @RequestMapping("/showList")
+  public R showList() {
+    List<InfoEntity> productList = new ArrayList<>();
+    productList = infoService.list();
+    List<Map> list = new ArrayList<>();
+    for (InfoEntity info : productList) {
+      Map<String,String> map = new HashMap<>();
+      QueryWrapper wrapper = new QueryWrapper();
+      wrapper.eq("product_id",info.getProductId());
+      map.put("picUrl",picInfoService.getOne(wrapper).getPicUrl());
+      map.put("productId",String.valueOf(info.getProductId()));
+      map.put("price",String.valueOf(info.getPrice()));
+      map.put("weight",String.valueOf(info.getPerWeight()));
+      map.put("description",info.getDescription());
+      map.put("supplyNum",String.valueOf(info.getSupplyNum()));
+      map.put("place",info.getPlace());
+      map.put("breed",info.getBreed());
+      map.put("isSpecial",String.valueOf(info.getIsSpecial()));
+      list.add(map);
+    }
+    R r = new R();
+    r.put("list",list);
+    return r;
+  }
 
   /**
    * 信息
@@ -70,6 +131,7 @@ public class InfoController {
    */
   @RequestMapping("/update")
   public void update(@RequestBody InfoEntity info) {
+
     infoService.updateInfo(info);
   }
 
@@ -81,6 +143,18 @@ public class InfoController {
     infoService.removeByIds(Arrays.asList(productIds));
 
     return R.ok();
+  }
+
+  /**
+   * 产品售出
+   */
+  @RequestMapping("/sell")
+  public void sell(@RequestParam("productId") String productId,@RequestParam("num") String num) {
+    QueryWrapper queryWrapper = new QueryWrapper();
+    queryWrapper.eq("product_id",productId);
+    InfoEntity info = infoService.getOne(queryWrapper);
+    info.setSupplyNum(info.getSupplyNum() - Integer.valueOf(num));
+    infoService.updateInfo(info);
   }
 
 }

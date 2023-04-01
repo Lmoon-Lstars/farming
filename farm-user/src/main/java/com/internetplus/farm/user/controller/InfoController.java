@@ -113,6 +113,7 @@ public class InfoController {
         String  returnvalue=GET(requestUrl);
         convertvalue= (JSONObject) JSON.parse(returnvalue);
         String openid= (String) convertvalue.get("openid");
+        System.out.println(openid);
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("open_id",openid);
         List<InfoEntity> list = infoService.list(wrapper);
@@ -123,10 +124,20 @@ public class InfoController {
             info.setOpenId(openid);
             info.setRegisterTime(new Date());
             infoService.save(info);
+            list.add(info);
         } else {
             System.out.println("用户已存在");
         }
-        return R.ok();
+        int userId = list.get(0).getUserInfoId();
+        String nickName = list.get(0).getNickName();
+        String url = list.get(0).getAvatarUrl();
+        String phoneNumber = list.get(0).getMobilePhone();
+        R r = new R();
+        r.put("userId",String.valueOf(userId));
+        r.put("nickName",nickName);
+        r.put("imgurl",url);
+        r.put("phoneNumber",phoneNumber);
+        return r;
     }
     public  String GET(String url) {
         String result="";

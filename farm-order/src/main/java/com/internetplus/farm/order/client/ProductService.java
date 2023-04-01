@@ -9,4 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface ProductService {
   @RequestMapping("product/info/info")
   public InfoEntity info(@RequestParam("productId") Integer productId);
+
+  @RequestMapping("product/info/sell")
+  public void sell(@RequestParam("productId") String productId,@RequestParam("num") String num);
+
+  @RequestMapping("product/picinfo/getPic")
+  public String getUrl(@RequestParam(value = "productId")String productId);
 }

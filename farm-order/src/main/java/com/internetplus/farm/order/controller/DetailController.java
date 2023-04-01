@@ -1,7 +1,10 @@
 package com.internetplus.farm.order.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.internetplus.farm.order.client.ProductService;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +34,9 @@ import com.internetplus.common.utils.R;
 public class DetailController {
     @Autowired
     private DetailService detailService;
+
+    @Autowired
+    private ProductService productService;
 
     /**
      * 列表
@@ -90,8 +96,19 @@ public class DetailController {
     public List listDetail(@RequestParam("orderId")String orderId) {
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("order_id",Integer.valueOf(orderId));
+        List<Map> res = new ArrayList<>();
         List<DetailEntity> list = detailService.list(wrapper);
-        return list;
+        for (DetailEntity detail : list) {
+            Map<String,String> map = new HashMap<>();
+            map.put("id",String.valueOf(detail.getOrderDetailId()));
+            map.put("count",String.valueOf(detail.getProductCnt()));
+            map.put("picUrl",productService.getUrl(String.valueOf(detail.getProductId())));
+            map.put("name",detail.getProductName());
+            map.put("price",String.valueOf(detail.getProductPrice()));
+            map.put("weight",String.valueOf(detail.getWeight()));
+            res.add(map);
+        }
+        return res;
     }
 
 }

@@ -5,11 +5,15 @@ import com.internetplus.farm.user.client.ProductService;
 import com.internetplus.farm.user.entity.InfoEntity;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Stack;
 import javax.annotation.Resource;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +55,6 @@ public class CartController {
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = cartService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 
@@ -101,18 +104,22 @@ public class CartController {
      */
     @RequestMapping("/addToCart")
     public R addToCart(@RequestParam(value = "userId")String userId,@RequestParam(value = "productId")String productId){
-        if(productService.info(Integer.valueOf(productId)).getSupplyNum() == 0) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("user_id",userId);
+        wrapper.eq("product_id",productId);
+        List<CartEntity> list = cartService.list(wrapper);
+        int num = list.size();
+        if(num != 0 && productService.info(Integer.valueOf(productId)).getSupplyNum() <= list.get(0).getQuantity()) {
+            return R.ok("库存不足，请选购其他商品");
+        }
+        if(num == 0 && productService.info(Integer.valueOf(productId)).getSupplyNum() == 0) {
             return R.ok("库存不足，请选购其他商品");
         }
         CartEntity cart = new CartEntity();
         cart.setProductId(Integer.valueOf(productId));
         cart.setUserId(Integer.valueOf(userId));
         cart.setSelected(0);
-        QueryWrapper wrapper = new QueryWrapper();
-        wrapper.eq("user_id",userId);
-        wrapper.eq("product_id",productId);
-        List<InfoEntity> list = cartService.list(wrapper);
-        if(list.size() == 0) {
+        if(num == 0) {
             cart.setCreateTime(new Date());
             cart.setUpdateTime(new Date());
             cartService.save(cart);
@@ -145,6 +152,17 @@ public class CartController {
     }
 
     /**
+     *  清空购物车
+     */
+    @RequestMapping("/clear")
+    public R clear(@RequestParam(value = "userId")String userId) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("user_id",userId);
+        cartService.remove(wrapper);
+        return R.ok();
+    }
+
+    /**
      * 结算
      */
     @RequestMapping("/settlement")
@@ -174,5 +192,29 @@ public class CartController {
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("user_id",userId);
         return cartService.list(wrapper);
+    }
+
+    @RequestMapping("/getCart")
+    public R getCart(@RequestParam("userId")String userId) {
+        BigDecimal money = sum(userId);
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("user_id",userId);
+        List<CartEntity> cartList = cartService.list(wrapper);
+        R r = new R();
+        List<Map> list = new ArrayList<>();
+        for (CartEntity cart : cartList) {
+            Map<String,String> map = new HashMap<>();
+            map.put("productName",productService.info(cart.getProductId()).getProductName());
+            map.put("num",String.valueOf(cart.getQuantity()));
+            map.put("picUrl",productService.getUrl(String.valueOf(cart.getProductId())));
+            map.put("weight",String.valueOf(productService.info(cart.getProductId()).getPerWeight()));
+            map.put("description",productService.info(cart.getProductId()).getDescription());
+            map.put("price",String.valueOf(productService.info(cart.getProductId()).getPrice()));
+            map.put("productId",String.valueOf(cart.getProductId()));
+            list.add(map);
+        }
+        r.put("list",list);
+        r.put("sum",money);
+        return r;
     }
 }

@@ -1,5 +1,6 @@
 package com.internetplus.farm.user.client;
 
+import com.internetplus.common.utils.R;
 import com.internetplus.farm.product.entity.InfoEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,4 +14,7 @@ public interface ProductService {
 
   @RequestMapping("product/info/update")
   public void update(@RequestBody InfoEntity info);
+
+  @RequestMapping("product/picinfo/getPic")
+  public String getUrl(@RequestParam(value = "productId")String productId);
 }

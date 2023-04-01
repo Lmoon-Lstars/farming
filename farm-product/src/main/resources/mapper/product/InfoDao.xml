@@ -23,6 +23,10 @@
         <result property="isSpecial" column="is_special"/>
         <result property="indate" column="indate"/>
         <result property="modifiedTime" column="modified_time"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="disPrice" column="dis_price"/>
+        <result property="ifShow" column="if_show"/>
     </resultMap>
 
 

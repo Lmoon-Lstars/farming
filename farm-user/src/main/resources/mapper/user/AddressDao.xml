@@ -12,6 +12,7 @@
         <result property="district" column="district"/>
         <result property="address" column="address"/>
         <result property="userInfoId" column="user_info_id"/>
+        <result property="phoneNumber" column="phone_number"/>
     </resultMap>
 
 

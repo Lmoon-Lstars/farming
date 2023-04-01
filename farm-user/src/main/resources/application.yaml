@@ -4,7 +4,7 @@ spring:
   datasource:
     username: farm_user
     password: 1234
-    url: jdbc:mysql://aitmaker.cn:3306/farm_user?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://aitmaker.cn:3306/farm_user?useUnicode=true&characterEncoding=UTF-8&useSSL=FALSE&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     nacos:

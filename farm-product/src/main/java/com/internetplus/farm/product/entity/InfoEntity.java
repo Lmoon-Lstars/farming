@@ -11,7 +11,7 @@ import lombok.ToString;
 
 /**
  * 商品信息表
- * 
+ *
  * @author lcx
  * @email 1181153997@gmail.com
  * @date 2023-03-13 16:42:29
@@ -95,5 +95,20 @@ public class InfoEntity implements Serializable {
 	 * 最后修改时间
 	 */
 	private Date modifiedTime;
-
+	/**
+	 * 优惠开始时间
+	 */
+	private Date startTime;
+	/**
+	 * 优惠结束时间
+	 */
+	private Date endTime;
+	/**
+	 * 优惠价
+	 */
+	private BigDecimal disPrice;
+	/**
+	 * 是否优惠
+	 */
+	private Integer ifShow;
 }

@@ -1,7 +1,9 @@
 package com.internetplus.farm.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import com.internetplus.common.utils.R;
 
 
 /**
- * 
+ *
  *
  * @author wrk
  * @email 1181153997@gmail.com
@@ -85,9 +87,21 @@ public class AddressController {
      * 获取地址
      */
     @RequestMapping("/getInfo")
-    public AddressEntity getInfo(@RequestParam("addressId")String addressId) {
+    public AddressEntity getInfo(@RequestParam(value = "addressId")String addressId) {
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("address_id",addressId);
         return addressService.getOne(wrapper);
+    }
+
+    /**
+     * 获取地址列表
+     */
+    @RequestMapping("/getList")
+    public List getList(@RequestParam(value = "userId")String userId) {
+        List<AddressEntity> list = new ArrayList<>();
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("user_info_id",userId);
+        list = addressService.list(wrapper);
+        return list;
     }
 }

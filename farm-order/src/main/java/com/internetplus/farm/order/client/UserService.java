@@ -1,5 +1,6 @@
 package com.internetplus.farm.order.client;
 
+import com.internetplus.common.utils.R;
 import com.internetplus.farm.user.entity.AddressEntity;
 
 import com.internetplus.farm.user.entity.CartEntity;
@@ -18,4 +19,7 @@ public interface UserService {
 
   @RequestMapping("user/cart/getCartInfo")
   public List<CartEntity> getCartInfo(@RequestParam("userId")String userId);
+
+  @RequestMapping("user/cart/clear")
+  public R clear(@RequestParam(value = "userId")String userId);
 }

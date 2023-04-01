@@ -35,7 +35,7 @@ spring:
     static-locations: classpath:/static/,classpath:/views/
 
 #mongodb:
-#  host: localhost
+#  host: aitmaker.cn
 #  port: 27017
 #  auth: false #是否使用密码验证
 #  username: tincery

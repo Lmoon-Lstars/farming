@@ -9,8 +9,10 @@ import com.internetplus.farm.user.entity.AddressEntity;
 import com.internetplus.farm.user.entity.CartEntity;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -97,8 +99,30 @@ public class MasterController {
     @RequestMapping("/delete")
     public R delete(@RequestBody Integer[] orderIds){
 		masterService.removeByIds(Arrays.asList(orderIds));
+        for (Integer orderId : orderIds) {
+            QueryWrapper wrapper = new QueryWrapper();
+            wrapper.eq("order_id",orderId);
+            detailService.remove(wrapper);
+        }
 
         return R.ok();
+    }
+
+    /**
+     * 取消订单
+     */
+    @RequestMapping("/cancel")
+    public R cancel(@RequestParam(value = "orderId")String orderId) {
+        MasterEntity master = masterService.getById(orderId);
+        master.setOrderStatus(3);
+        masterService.updateById(master);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("order_id",orderId);
+        List<DetailEntity> list = detailService.list(queryWrapper);
+        for (DetailEntity detail : list) {
+            productService.sell(String.valueOf(detail.getProductId()),String.valueOf(-detail.getProductCnt()));
+        }
+        return R.ok("取消成功");
     }
 
     /**
@@ -110,14 +134,49 @@ public class MasterController {
         wrapper.eq("order_status",Integer.valueOf(orderStatus));
         wrapper.eq("customer_id",Integer.valueOf(userId));
         List<MasterEntity> masterList = masterService.list(wrapper);
-        return masterList;
+        List<Map> res = new ArrayList<>();
+        for (MasterEntity master : masterList) {
+            Map<String,Object> map = new HashMap<>();
+            map.put("orderId",String.valueOf(master.getOrderId()));
+            map.put("orderSn",String.valueOf(master.getOrderSn()));
+            map.put("userId",String.valueOf(master.getCustomerId()));
+            map.put("shippingUser",master.getShippingUser());
+            map.put("province",master.getProvince());
+            map.put("city",master.getCity());
+            map.put("district",master.getDistrict());
+            map.put("address",master.getAddress());
+            map.put("orderMoney",String.valueOf(master.getOrderMoney()));
+            map.put("districtMoney",String.valueOf(master.getDistrictMoney()));
+            map.put("paymentMoney",String.valueOf(master.getPaymentMoney()));
+            map.put("createTime",String.valueOf(master.getCreateTime()));
+            map.put("remark",master.getRemark());
+            map.put("phoneNumber",master.getPhoneNumber());
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("order_id",master.getOrderId());
+            int i = 1;
+            List<DetailEntity> detailList = detailService.list(queryWrapper);
+            List<String> picUrl = new ArrayList<>();
+            for (DetailEntity detail : detailList) {
+                picUrl.add(productService.getUrl(String.valueOf(detail.getProductId())));
+            }
+            map.put("picUrl",picUrl);
+            res.add(map);
+        }
+        return res;
     }
 
     /**
      * 下单
      */
     @RequestMapping("/settlement")
-    public R settlement(@RequestParam("userId")String userId,@RequestParam("addressId")String addressId,@RequestParam("cuponId")String cuponId,@RequestParam("sum")String sum,@RequestParam("shippingMoney")String shippingMoney) {
+    public R settlement(@RequestParam("userId")String userId,@RequestParam("addressId")String addressId,@RequestParam("cuponId")String cuponId,@RequestParam("sum")String sum,@RequestParam("shippingMoney")String shippingMoney,@RequestParam("remark")String remark) {
+        List<CartEntity> list = userService.getCartInfo(userId);
+        for (CartEntity cart : list) {
+            if(cart.getQuantity() >= productService.info(cart.getProductId()).getSupplyNum()) {
+                userService.clear(userId);
+                return R.ok("库存不足，请重新下单");
+            }
+        }
         MasterEntity master = new MasterEntity();
         String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()).toString();
         master.setOrderSn(Long.valueOf(date));
@@ -126,8 +185,10 @@ public class MasterController {
         master.setShippingUser(address.getShippingUser());
         master.setProvince(address.getProvince());
         master.setCity(address.getCity());
+        master.setPhoneNumber(address.getPhoneNumber());
         master.setDistrict(address.getDistrict());
         master.setAddress(address.getAddress());
+        master.setRemark(remark);
         master.setOrderMoney(new BigDecimal(sum));
         int cuponMoney = 0;
         if(!cuponId.equals("null")) {
@@ -139,8 +200,8 @@ public class MasterController {
         master.setCreateTime(new Date());
         master.setOrderStatus(1);
         masterService.save(master);
-        List<CartEntity> list = userService.getCartInfo(userId);
         for (CartEntity cart : list) {
+            productService.sell(String.valueOf(cart.getProductId()),String.valueOf(cart.getQuantity()));
             DetailEntity detail = new DetailEntity();
             detail.setOrderId(master.getOrderId());
             detail.setProductId(cart.getProductId());
@@ -150,6 +211,7 @@ public class MasterController {
             detail.setWeight(Double.valueOf(productService.info(cart.getProductId()).getPerWeight() * cart.getQuantity()));
             detailService.save(detail);
         }
+        userService.clear(userId);
         return R.ok();
     }
 }
