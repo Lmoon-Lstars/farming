@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('user:info:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('user:info:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -26,43 +26,43 @@
         prop="userInfoId"
         header-align="center"
         align="center"
-        label="">
+        label="ID">
       </el-table-column>
       <el-table-column
         prop="avatarUrl"
         header-align="center"
         align="center"
-        label="">
+        label="头像URL">
       </el-table-column>
       <el-table-column
         prop="openId"
         header-align="center"
         align="center"
-        label="">
+        label="用户辨识字段">
       </el-table-column>
       <el-table-column
         prop="plantPoint"
         header-align="center"
         align="center"
-        label="">
+        label="种源点">
       </el-table-column>
       <el-table-column
         prop="mobilePhone"
         header-align="center"
         align="center"
-        label="">
+        label="电话号码">
       </el-table-column>
       <el-table-column
         prop="nickName"
         header-align="center"
         align="center"
-        label="">
+        label="昵称">
       </el-table-column>
       <el-table-column
         prop="registerTime"
         header-align="center"
         align="center"
-        label="">
+        label="注册时间">
       </el-table-column>
       <el-table-column
         fixed="right"

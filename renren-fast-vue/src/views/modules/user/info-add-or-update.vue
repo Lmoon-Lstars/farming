@@ -4,22 +4,22 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="" prop="avatarUrl">
+    <el-form-item label="头像URL" prop="avatarUrl">
       <el-input v-model="dataForm.avatarUrl" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="openId">
+    <el-form-item label="用户辨识字段" prop="openId">
       <el-input v-model="dataForm.openId" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="plantPoint">
+    <el-form-item label="种源点" prop="plantPoint">
       <el-input v-model="dataForm.plantPoint" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="mobilePhone">
+    <el-form-item label="电话号码" prop="mobilePhone">
       <el-input v-model="dataForm.mobilePhone" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="nickName">
+    <el-form-item label="昵称" prop="nickName">
       <el-input v-model="dataForm.nickName" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="registerTime">
+    <el-form-item label="注册时间" prop="registerTime">
       <el-input v-model="dataForm.registerTime" placeholder=""></el-input>
     </el-form-item>
     </el-form>

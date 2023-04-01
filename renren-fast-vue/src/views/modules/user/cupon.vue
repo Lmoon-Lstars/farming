@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('user:cupon:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('user:cupon:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -26,13 +26,13 @@
         prop="id"
         header-align="center"
         align="center"
-        label="">
+        label="ID">
       </el-table-column>
       <el-table-column
         prop="cuponName"
         header-align="center"
         align="center"
-        label="">
+        label="折扣券">
       </el-table-column>
       <el-table-column
         prop="minPoint"
@@ -44,43 +44,43 @@
         prop="cuponAmount"
         header-align="center"
         align="center"
-        label="">
+        label="数量">
       </el-table-column>
       <el-table-column
         prop="startTime"
         header-align="center"
         align="center"
-        label="">
+        label="起始时间">
       </el-table-column>
       <el-table-column
         prop="endTime"
         header-align="center"
         align="center"
-        label="">
+        label="结束时间">
       </el-table-column>
       <el-table-column
         prop="userInfoId"
         header-align="center"
         align="center"
-        label="">
+        label="所属用户ID">
       </el-table-column>
       <el-table-column
         prop="cuponStatu"
         header-align="center"
         align="center"
-        label="">
+        label="有效性">
       </el-table-column>
       <el-table-column
         prop="cuponType"
         header-align="center"
         align="center"
-        label="">
+        label="类型">
       </el-table-column>
       <el-table-column
         prop="cuponRules"
         header-align="center"
         align="center"
-        label="">
+        label="使用规则">
       </el-table-column>
       <el-table-column
         fixed="right"
