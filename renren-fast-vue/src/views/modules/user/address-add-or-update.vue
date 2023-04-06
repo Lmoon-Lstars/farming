@@ -46,7 +46,7 @@
           district: '',
           address: '',
           userInfoId: '',
-          phoneNumber: '',
+          phoneNumber: ''
         },
         dataRule: {
           shippingUser: [
