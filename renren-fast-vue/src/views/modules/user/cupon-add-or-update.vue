@@ -4,31 +4,31 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="" prop="cuponName">
+    <el-form-item label="折扣券" prop="cuponName">
       <el-input v-model="dataForm.cuponName" placeholder=""></el-input>
     </el-form-item>
     <el-form-item label="使用门槛" prop="minPoint">
-      <el-input v-model="dataForm.minPoint" placeholder="使用门槛"></el-input>
+      <el-input v-model="dataForm.minPoint" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="cuponAmount">
+    <el-form-item label="数量" prop="cuponAmount">
       <el-input v-model="dataForm.cuponAmount" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="startTime">
+    <el-form-item label="起始时间" prop="startTime">
       <el-input v-model="dataForm.startTime" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="endTime">
+    <el-form-item label="结束时间" prop="endTime">
       <el-input v-model="dataForm.endTime" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="userInfoId">
+    <el-form-item label="所属用户ID" prop="userInfoId">
       <el-input v-model="dataForm.userInfoId" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="cuponStatu">
+    <el-form-item label="有效性" prop="cuponStatu">
       <el-input v-model="dataForm.cuponStatu" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="cuponType">
+    <el-form-item label="类型" prop="cuponType">
       <el-input v-model="dataForm.cuponType" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="cuponRules">
+    <el-form-item label="使用规则" prop="cuponRules">
       <el-input v-model="dataForm.cuponRules" placeholder=""></el-input>
     </el-form-item>
     </el-form>
@@ -61,7 +61,7 @@
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
           minPoint: [
-            { required: true, message: '使用门槛不能为空', trigger: 'blur' }
+            { required: true, message: '不能为空', trigger: 'blur' }
           ],
           cuponAmount: [
             { required: true, message: '不能为空', trigger: 'blur' }

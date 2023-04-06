@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('user:address:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('user:address:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -26,43 +26,49 @@
         prop="addressId"
         header-align="center"
         align="center"
-        label="">
+        label="ID">
       </el-table-column>
       <el-table-column
         prop="shippingUser"
         header-align="center"
         align="center"
-        label="">
+        label="收货人">
       </el-table-column>
       <el-table-column
         prop="province"
         header-align="center"
         align="center"
-        label="">
+        label="省份">
       </el-table-column>
       <el-table-column
         prop="city"
         header-align="center"
         align="center"
-        label="">
+        label="城市">
       </el-table-column>
       <el-table-column
         prop="district"
         header-align="center"
         align="center"
-        label="">
+        label="城区">
       </el-table-column>
       <el-table-column
         prop="address"
         header-align="center"
         align="center"
-        label="">
+        label="具体地址">
       </el-table-column>
       <el-table-column
         prop="userInfoId"
         header-align="center"
         align="center"
-        label="">
+        label="用户ID">
+      </el-table-column>
+      <el-table-column
+        prop="phoneNumber"
+        header-align="center"
+        align="center"
+        label="电话号码">
       </el-table-column>
       <el-table-column
         fixed="right"

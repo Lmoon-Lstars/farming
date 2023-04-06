@@ -4,24 +4,27 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="" prop="shippingUser">
+    <el-form-item label="收货人" prop="shippingUser">
       <el-input v-model="dataForm.shippingUser" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="province">
+    <el-form-item label="省份" prop="province">
       <el-input v-model="dataForm.province" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="city">
+    <el-form-item label="城市" prop="city">
       <el-input v-model="dataForm.city" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="district">
+    <el-form-item label="城区" prop="district">
       <el-input v-model="dataForm.district" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="address">
+    <el-form-item label="具体地址" prop="address">
       <el-input v-model="dataForm.address" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="userInfoId">
+    <el-form-item label="用户ID" prop="userInfoId">
       <el-input v-model="dataForm.userInfoId" placeholder=""></el-input>
     </el-form-item>
+      <el-form-item label="电话号码" prop="phoneNumber">
+        <el-input v-model="dataForm.phoneNumber" placeholder=""></el-input>
+      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -42,7 +45,8 @@
           city: '',
           district: '',
           address: '',
-          userInfoId: ''
+          userInfoId: '',
+          phoneNumber: ''
         },
         dataRule: {
           shippingUser: [
@@ -61,6 +65,9 @@
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
           userInfoId: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+          ],
+          phoneNumber: [
             { required: true, message: '不能为空', trigger: 'blur' }
           ]
         }
@@ -85,6 +92,7 @@
                 this.dataForm.district = data.address.district
                 this.dataForm.address = data.address.address
                 this.dataForm.userInfoId = data.address.userInfoId
+                this.dataForm.phoneNumber = data.address.phoneNumber
               }
             })
           }
@@ -104,7 +112,8 @@
                 'city': this.dataForm.city,
                 'district': this.dataForm.district,
                 'address': this.dataForm.address,
-                'userInfoId': this.dataForm.userInfoId
+                'userInfoId': this.dataForm.userInfoId,
+                'phoneNumber': this.dataForm.phoneNumber
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
