@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,9 +76,11 @@ public class InfoController {
    * 展示商品信息
    */
   @RequestMapping("/showList")
-  public R showList() {
+  public R showList(@RequestParam(value = "typeCode")String typeCode) {
     List<InfoEntity> productList = new ArrayList<>();
-    productList = infoService.list();
+    QueryWrapper queryWrapper = new QueryWrapper();
+    queryWrapper.eq("type_code",Integer.valueOf(typeCode));
+    productList = infoService.list(queryWrapper);
     List<Map> list = new ArrayList<>();
     for (InfoEntity info : productList) {
       Map<String,String> map = new HashMap<>();
@@ -157,4 +160,50 @@ public class InfoController {
     infoService.updateInfo(info);
   }
 
+  /**
+   * 模糊查询
+   */
+  @RequestMapping("/search")
+  public List search(@Param("productId") Integer productId,@Param("supplyNum")Integer supplyNum,@Param("ifShow") Integer ifShow) {
+    QueryWrapper<InfoEntity> queryWrapper = new QueryWrapper<>();
+    if(productId != null) {
+      queryWrapper.like("product_id",productId);
+    }
+    if(ifShow != null) {
+      queryWrapper.like("if_show",ifShow);
+    }
+    if(supplyNum != null) {
+      queryWrapper.like("supply_num",supplyNum);
+    }
+    return infoService.getBaseMapper().selectList(queryWrapper);
+  }
+
+  /**
+   * 根据产品名进行模糊查询
+   */
+  @RequestMapping("/searchByName")
+  public List searchByName(@Param("productName") String productName) {
+    QueryWrapper<InfoEntity> queryWrapper = new QueryWrapper<>();
+    if(productName != null) {
+      queryWrapper.like("product_name",productName);
+    }
+    List<InfoEntity> productList = infoService.getBaseMapper().selectList(queryWrapper);
+    List<Map> list = new ArrayList<>();
+    for (InfoEntity info : productList) {
+      Map<String,String> map = new HashMap<>();
+      QueryWrapper wrapper = new QueryWrapper();
+      wrapper.eq("product_id",info.getProductId());
+      map.put("picUrl",picInfoService.getOne(wrapper).getPicUrl());
+      map.put("productId",String.valueOf(info.getProductId()));
+      map.put("price",String.valueOf(info.getPrice()));
+      map.put("weight",String.valueOf(info.getPerWeight()));
+      map.put("description",info.getDescription());
+      map.put("supplyNum",String.valueOf(info.getSupplyNum()));
+      map.put("place",info.getPlace());
+      map.put("breed",info.getBreed());
+      map.put("isSpecial",String.valueOf(info.getIsSpecial()));
+      list.add(map);
+    }
+    return list;
+  }
 }

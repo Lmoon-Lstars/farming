@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -213,5 +214,15 @@ public class MasterController {
         }
         userService.clear(userId);
         return R.ok();
+    }
+
+    /**
+     * 模糊查询
+     */
+    @RequestMapping("/search")
+    public List search(@Param("orderId")Integer orderId,@Param("customerId")Integer customerId,
+        @Param("shippingUser")String shippingUser,@Param("address")String address,
+        @Param("createTime") Date createTime,@Param("phoneNumber") String phoneNumber) {
+        return masterService.findByConditions(orderId,customerId,shippingUser,address,createTime,phoneNumber);
     }
 }

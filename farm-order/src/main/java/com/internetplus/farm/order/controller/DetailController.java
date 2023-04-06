@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -109,6 +110,24 @@ public class DetailController {
             res.add(map);
         }
         return res;
+    }
+
+    /**
+     * 模糊查询
+     */
+    @RequestMapping("/search")
+    public List search(@Param("orderId")Integer orderId,@Param("productName") String productName,@Param("productId")Integer productId) {
+        QueryWrapper<DetailEntity> queryWrapper = new QueryWrapper<>();
+        if(orderId != null) {
+            queryWrapper.like("order_id",orderId);
+        }
+        if(productId != null) {
+            queryWrapper.like("product_id",productId);
+        }
+        if(productName != null) {
+            queryWrapper.like("product_name",productName);
+        }
+        return detailService.getBaseMapper().selectList(queryWrapper);
     }
 
 }

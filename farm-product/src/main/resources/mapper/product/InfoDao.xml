@@ -27,6 +27,7 @@
         <result property="endTime" column="end_time"/>
         <result property="disPrice" column="dis_price"/>
         <result property="ifShow" column="if_show"/>
+        <result property="typeCode" column="type_code"/>
     </resultMap>
 
 

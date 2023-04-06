@@ -1,6 +1,7 @@
 package com.internetplus.farm.order.service.impl;
 
 import java.util.Date;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -32,6 +33,30 @@ public class MasterServiceImpl extends ServiceImpl<MasterDao, MasterEntity> impl
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<MasterEntity> findByConditions (Integer orderId,Integer customerId, String shippingUser,String address, Date createTime, String phoneNumber){
+        QueryWrapper<MasterEntity> queryWrapper = new QueryWrapper<>();
+        if(orderId != null) {
+            queryWrapper.like("order_id",orderId);
+        }
+        if(customerId != null) {
+            queryWrapper.like("customer_id",customerId);
+        }
+        if(shippingUser != null) {
+            queryWrapper.like("shipping_user",shippingUser);
+        }
+        if(address != null) {
+            queryWrapper.like("address",address);
+        }
+        if(createTime != null) {
+            queryWrapper.like("create_time",createTime);
+        }
+        if(phoneNumber != null) {
+            queryWrapper.like("phone_number",phoneNumber);
+        }
+        return baseMapper.selectList(queryWrapper);
     }
 
 }

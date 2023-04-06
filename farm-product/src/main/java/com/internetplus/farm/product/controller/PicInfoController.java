@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -116,6 +117,11 @@ public class PicInfoController {
             }
             // 保存上传文件到指定的上传路径，文件名使用ID进行命名
             File dest = new File("/www/wwwroot/farm/photo/" +  fileName );
+            if(picInfoService.getOne(new QueryWrapper<PicInfoEntity>().eq("product_id",id)).getPicUrl() != null && picInfoService.getOne(new QueryWrapper<PicInfoEntity>().eq("product_id",id)).getPicUrl().length() != 0) {
+                String name = picInfoService.getOne(new QueryWrapper<PicInfoEntity>().eq("product_id",id)).getPicUrl().substring(24);
+                File temp = new File("/www/wwwroot/farm/photo/" + name);
+                temp.delete();
+            }
             dest.getParentFile().mkdirs();
             file.transferTo(dest);
             // 将上传的文件名和ID保存到数据库中
@@ -127,6 +133,15 @@ public class PicInfoController {
         } catch (IOException e) {
             throw new IOException("上传文件失败", e);
         }
+    }
+
+    @RequestMapping("/search")
+    public List search(@Param("productId")Integer productId) {
+        QueryWrapper<PicInfoEntity> queryWrapper = new QueryWrapper<>();
+        if(productId != null) {
+            queryWrapper.like("product_id",productId);
+        }
+        return picInfoService.getBaseMapper().selectList(queryWrapper);
     }
 
 }

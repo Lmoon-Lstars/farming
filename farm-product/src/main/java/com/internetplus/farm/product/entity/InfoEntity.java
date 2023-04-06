@@ -111,4 +111,8 @@ public class InfoEntity implements Serializable {
 	 * 是否优惠
 	 */
 	private Integer ifShow;
+	/**
+	 * 产品类型代码
+	 */
+	private Integer typeCode;
 }
