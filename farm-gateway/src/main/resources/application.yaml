@@ -8,32 +8,11 @@ spring:
 #   精确路由放在上面（优先级高），模糊路由放在下面（优先级低）
     gateway:
       routes:
-        - id: baidu_route
-          uri: http://www.baidu.com
-          predicates:
-            - Query=url,baidu
-        - id: qq_route
-          uri: http://www.qq.com
-          predicates:
-            - Query=url,qq
         # lb: 所有mall-product的请求都会被截取掉 /api/
         - id: product_route
           uri: lb://farm-product
           predicates:
             - Path=/api/product/**
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-        #         api/product/info/list
-        - id: supplier_route
-          uri: lb://farm-supplier
-          predicates:
-            - Path=/api/supplier/**
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-        - id: order_route
-          uri: lb://farm-order
-          predicates:
-            - Path=/api/order/**
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
         - id: user_route
@@ -42,15 +21,17 @@ spring:
             - Path=/api/user/**
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
+        #         api/product/info/list
+        - id: order_route
+          uri: lb://farm-order
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
         - id: admin_route
           uri: lb://renren-fast
           predicates:
             - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>.*), /renren-fast/$\{segment}
-        - id: coupon_route
-          uri: lb://farm-supplier
-          predicates:
-            - Path=/api/coupon/**
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
+

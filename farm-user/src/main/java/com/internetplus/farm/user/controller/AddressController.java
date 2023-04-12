@@ -105,5 +105,14 @@ public class AddressController {
         return list;
     }
 
+    /**
+     * 删除指定地址
+     */
+    @RequestMapping("deleteAddress")
+    public R deleteAddress(@RequestParam(value = "addressId")String addressId) {
+        addressService.removeById(addressId);
+        return R.ok();
+    }
+
 
 }

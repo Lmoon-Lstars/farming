@@ -94,10 +94,10 @@ public class DetailController {
      * 查看订单详情
      */
     @RequestMapping("/listDetail")
-    public List listDetail(@RequestParam("orderId")String orderId) {
-        QueryWrapper wrapper = new QueryWrapper();
+    public List<Map<String,String>> listDetail(@RequestParam("orderId")String orderId) {
+        QueryWrapper<DetailEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("order_id",Integer.valueOf(orderId));
-        List<Map> res = new ArrayList<>();
+        List<Map<String,String>> res = new ArrayList<>();
         List<DetailEntity> list = detailService.list(wrapper);
         for (DetailEntity detail : list) {
             Map<String,String> map = new HashMap<>();
@@ -116,7 +116,7 @@ public class DetailController {
      * 模糊查询
      */
     @RequestMapping("/search")
-    public List search(@Param("orderId")Integer orderId,@Param("productName") String productName,@Param("productId")Integer productId) {
+    public R search(@Param("orderId")Integer orderId,@Param("productName") String productName,@Param("productId")Integer productId) {
         QueryWrapper<DetailEntity> queryWrapper = new QueryWrapper<>();
         if(orderId != null) {
             queryWrapper.like("order_id",orderId);
@@ -127,7 +127,8 @@ public class DetailController {
         if(productName != null) {
             queryWrapper.like("product_name",productName);
         }
-        return detailService.getBaseMapper().selectList(queryWrapper);
+        List<DetailEntity> list = detailService.getBaseMapper().selectList(queryWrapper);
+        return R.ok("list",list);
     }
 
 }

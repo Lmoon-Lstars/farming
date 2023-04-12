@@ -8,6 +8,7 @@ import com.internetplus.farm.product.service.InfoService;
 import com.internetplus.farm.product.service.PicInfoService;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,23 +52,25 @@ public class InfoController {
    */
   @RequestMapping("/getDiscount")
   public List getDiscount() {
-    QueryWrapper wrapper = new QueryWrapper();
-    wrapper.eq("if_show",1);
-    List<InfoEntity> products = infoService.list(wrapper);
+    List<InfoEntity> products = infoService.list();
+    Date date = new Date();
     List<Map> res = new ArrayList<>();
     for (InfoEntity product : products) {
-      Map<String,String> map = new HashMap<>();
-      QueryWrapper queryWrapper = new QueryWrapper();
-      queryWrapper.eq("product_id",product.getProductId());
-      map.put("id",String.valueOf(product.getProductId()));
-      map.put("picUrl",picInfoService.getOne(queryWrapper).getPicUrl());
-      map.put("name",product.getProductName());
-      map.put("disPrice",String.valueOf(product.getDisPrice()));
-      map.put("weight",String.valueOf(product.getPerWeight()));
-      map.put("supplyNum",String.valueOf(product.getSupplyNum()));
-      map.put("startTime",product.getStartTime().toString());
-      map.put("endTime",product.getEndTime().toString());
-      res.add(map);
+      if(date.after(product.getStartTime()) && date.before(product.getEndTime())) {
+        Map<String,String> map = new HashMap<>();
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("product_id",product.getProductId());
+        map.put("id",String.valueOf(product.getProductId()));
+        map.put("picUrl",picInfoService.getOne(queryWrapper).getPicUrl());
+        map.put("name",product.getProductName());
+        map.put("price",String.valueOf(product.getPrice()));
+        map.put("disPrice",String.valueOf(product.getDisPrice()));
+        map.put("weight",String.valueOf(product.getPerWeight()));
+        map.put("supplyNum",String.valueOf(product.getSupplyNum()));
+        map.put("startTime",product.getStartTime().toString());
+        map.put("endTime",product.getEndTime().toString());
+        res.add(map);
+      }
     }
     return res;
   }
@@ -77,28 +80,57 @@ public class InfoController {
    */
   @RequestMapping("/showList")
   public R showList(@RequestParam(value = "typeCode")String typeCode) {
-    List<InfoEntity> productList = new ArrayList<>();
-    QueryWrapper queryWrapper = new QueryWrapper();
-    queryWrapper.eq("type_code",Integer.valueOf(typeCode));
-    productList = infoService.list(queryWrapper);
-    List<Map> list = new ArrayList<>();
-    for (InfoEntity info : productList) {
-      Map<String,String> map = new HashMap<>();
-      QueryWrapper wrapper = new QueryWrapper();
-      wrapper.eq("product_id",info.getProductId());
-      map.put("picUrl",picInfoService.getOne(wrapper).getPicUrl());
-      map.put("productId",String.valueOf(info.getProductId()));
-      map.put("price",String.valueOf(info.getPrice()));
-      map.put("weight",String.valueOf(info.getPerWeight()));
-      map.put("description",info.getDescription());
-      map.put("supplyNum",String.valueOf(info.getSupplyNum()));
-      map.put("place",info.getPlace());
-      map.put("breed",info.getBreed());
-      map.put("isSpecial",String.valueOf(info.getIsSpecial()));
-      list.add(map);
-    }
     R r = new R();
-    r.put("list",list);
+    if(!typeCode.equals("-1")) {
+      List<InfoEntity> productList = new ArrayList<>();
+      QueryWrapper queryWrapper = new QueryWrapper();
+      queryWrapper.eq("type_code",Integer.valueOf(typeCode));
+      queryWrapper.eq("publish_status",1);
+      productList = infoService.list(queryWrapper);
+      List<Map> list = new ArrayList<>();
+      for (InfoEntity info : productList) {
+        Map<String,String> map = new HashMap<>();
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("product_id",info.getProductId());
+        map.put("picUrl",picInfoService.getOne(wrapper).getPicUrl());
+        map.put("productId",String.valueOf(info.getProductId()));
+        map.put("price",String.valueOf(info.getPrice()));
+        map.put("weight",String.valueOf(info.getPerWeight()));
+        map.put("description",info.getDescription());
+        map.put("supplyNum",String.valueOf(info.getSupplyNum()));
+        map.put("place",info.getPlace());
+        map.put("breed",info.getBreed());
+        map.put("name",info.getProductName());
+        map.put("isSpecial",String.valueOf(info.getIsSpecial()));
+        list.add(map);
+      }
+      r.put("list",list);
+    } else {
+      List<InfoEntity> productList = new ArrayList<>();
+      QueryWrapper queryWrapper = new QueryWrapper();
+      queryWrapper.eq("if_show",1);
+      queryWrapper.eq("publish_status",1);
+      productList = infoService.list(queryWrapper);
+      List<Map> list = new ArrayList<>();
+      for (InfoEntity info : productList) {
+        Map<String,String> map = new HashMap<>();
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("product_id",info.getProductId());
+        map.put("picUrl",picInfoService.getOne(wrapper).getPicUrl());
+        map.put("productId",String.valueOf(info.getProductId()));
+        map.put("price",String.valueOf(info.getPrice()));
+        map.put("disPrice",String.valueOf(info.getDisPrice()));
+        map.put("weight",String.valueOf(info.getPerWeight()));
+        map.put("description",info.getDescription());
+        map.put("supplyNum",String.valueOf(info.getSupplyNum()));
+        map.put("place",info.getPlace());
+        map.put("breed",info.getBreed());
+        map.put("name",info.getProductName());
+        map.put("isSpecial",String.valueOf(info.getIsSpecial()));
+        list.add(map);
+      }
+      r.put("list",list);
+    }
     return r;
   }
 
@@ -143,8 +175,33 @@ public class InfoController {
    */
   @RequestMapping("/delete")
   public R delete(@RequestBody Integer[] productIds) {
-    infoService.removeByIds(Arrays.asList(productIds));
+    picInfoService.removeByIds(Arrays.asList(productIds));
+    return R.ok();
+  }
 
+  /**
+   * 下架
+   */
+  @RequestMapping("/down")
+  public R down(@RequestBody Integer[] productIds) {
+    for (Integer productId : productIds) {
+      InfoEntity info = infoService.getBaseMapper().selectById(productId);
+      info.setPublishStatus(0);
+      infoService.updateInfo(info);
+    }
+    return R.ok();
+  }
+
+  /**
+   *上架
+   */
+  @RequestMapping("/up")
+  public R up(@RequestBody Integer[] productIds) {
+    for (Integer productId : productIds) {
+      InfoEntity info = infoService.getBaseMapper().selectById(productId);
+      info.setPublishStatus(1);
+      infoService.updateInfo(info);
+    }
     return R.ok();
   }
 
@@ -187,6 +244,7 @@ public class InfoController {
     if(productName != null) {
       queryWrapper.like("product_name",productName);
     }
+    queryWrapper.eq("publish_status",1);
     List<InfoEntity> productList = infoService.getBaseMapper().selectList(queryWrapper);
     List<Map> list = new ArrayList<>();
     for (InfoEntity info : productList) {

@@ -33,7 +33,7 @@ import com.internetplus.common.utils.R;
 
 
 /**
- * 
+ *
  *
  * @author wrk
  * @email 1181153997@gmail.com
@@ -119,6 +119,7 @@ public class CartController {
         cart.setProductId(Integer.valueOf(productId));
         cart.setUserId(Integer.valueOf(userId));
         cart.setSelected(0);
+        int quantity = 0;
         if(num == 0) {
             cart.setCreateTime(new Date());
             cart.setUpdateTime(new Date());
@@ -130,7 +131,16 @@ public class CartController {
             item.setUpdateTime(new Date());
             cartService.update(item,wrapper);
         }
-        return R.ok("sum",sum(userId).toString());
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("user_id",userId);
+        List<CartEntity> cartList = cartService.list(queryWrapper);
+        for (CartEntity cartEntity : cartList) {
+            quantity += cartEntity.getQuantity();
+        }
+        Map<Object,Object> map = new HashMap<>();
+        map.put("quantity",quantity);
+        map.put("sum",sum(userId).toString());
+        return R.ok("res",map);
     }
 
     /**
@@ -138,6 +148,8 @@ public class CartController {
      */
     @RequestMapping("/removeProduct")
     public R removeProduct(@RequestParam(value = "userId")String userId,@RequestParam(value = "productId")String productId) {
+        Map<Object,Object> map = new HashMap<>();
+        int quantity = 0;
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("user_id",userId);
         wrapper.eq("product_id",productId);
@@ -148,7 +160,15 @@ public class CartController {
             cart.setQuantity(cart.getQuantity() - 1);
             cartService.update(cart,wrapper);
         }
-        return R.ok("sum",sum(userId).toString());
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("user_id",userId);
+        List<CartEntity> list = cartService.list(queryWrapper);
+        for (CartEntity cartEntity : list) {
+            quantity += cartEntity.getQuantity();
+        }
+        map.put("quantity",quantity);
+        map.put("sum",sum(userId).toString());
+        return R.ok("res",map);
     }
 
     /**
@@ -167,7 +187,7 @@ public class CartController {
      */
     @RequestMapping("/settlement")
     public R settlement(@RequestParam(value = "userId")String userId) {
-        
+
         return R.ok("sum",sum(userId).toString());
     }
 

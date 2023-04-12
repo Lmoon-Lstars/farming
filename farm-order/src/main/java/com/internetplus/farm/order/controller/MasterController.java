@@ -117,7 +117,7 @@ public class MasterController {
         MasterEntity master = masterService.getById(orderId);
         master.setOrderStatus(3);
         masterService.updateById(master);
-        QueryWrapper queryWrapper = new QueryWrapper();
+        QueryWrapper<DetailEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("order_id",orderId);
         List<DetailEntity> list = detailService.list(queryWrapper);
         for (DetailEntity detail : list) {
@@ -130,12 +130,12 @@ public class MasterController {
      * 查询订单信息
      */
     @RequestMapping("/listOrder")
-    public List listOrder(@RequestParam("userId")String userId,@RequestParam("orderStatus")String orderStatus) {
-        QueryWrapper wrapper = new QueryWrapper();
+    public List<Map<String,Object>> listOrder(@RequestParam("userId")String userId,@RequestParam("orderStatus")String orderStatus) {
+        QueryWrapper<MasterEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("order_status",Integer.valueOf(orderStatus));
         wrapper.eq("customer_id",Integer.valueOf(userId));
         List<MasterEntity> masterList = masterService.list(wrapper);
-        List<Map> res = new ArrayList<>();
+        List<Map<String,Object>> res = new ArrayList<>();
         for (MasterEntity master : masterList) {
             Map<String,Object> map = new HashMap<>();
             map.put("orderId",String.valueOf(master.getOrderId()));
@@ -152,7 +152,7 @@ public class MasterController {
             map.put("createTime",String.valueOf(master.getCreateTime()));
             map.put("remark",master.getRemark());
             map.put("phoneNumber",master.getPhoneNumber());
-            QueryWrapper queryWrapper = new QueryWrapper();
+            QueryWrapper<DetailEntity> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("order_id",master.getOrderId());
             int i = 1;
             List<DetailEntity> detailList = detailService.list(queryWrapper);

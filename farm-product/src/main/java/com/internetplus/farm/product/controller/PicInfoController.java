@@ -94,7 +94,7 @@ public class PicInfoController {
     @RequestMapping("/getPic")
     public String getUrl(@RequestParam(value = "productId")String productId) {
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("product_id",productId);
+        queryWrapper.eq("product_id",Integer.valueOf(productId));
         return picInfoService.getOne(queryWrapper).getPicUrl();
     }
 
@@ -104,20 +104,20 @@ public class PicInfoController {
      * 接收前端上传的图片
      */
     @PostMapping("/receive")
-    public String uploadImage(@RequestParam("id") String id, @RequestParam("file") MultipartFile file) throws IOException {
+    public R uploadImage(@RequestParam(value = "id",required = false) String id, @RequestParam(value = "file",required = false) MultipartFile file) throws IOException {
         if (file.isEmpty()) {
-            return "上传失败，请选择文件";
+            return R.error("上传失败，请选择文件");
         }
         // 获取上传文件的文件名
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
             // 检查上传文件的文件类型，这里假设只允许上传jpg和png图片
             if (fileName.contains("..") || !(fileName.endsWith("jpg") || fileName.endsWith("png"))) {
-                return "上传失败，请选择jpg或png格式的图片";
+                return R.error("上传失败，请选择jpg或png格式的图片");
             }
             // 保存上传文件到指定的上传路径，文件名使用ID进行命名
             File dest = new File("/www/wwwroot/farm/photo/" +  fileName );
-            if(picInfoService.getOne(new QueryWrapper<PicInfoEntity>().eq("product_id",id)).getPicUrl() != null && picInfoService.getOne(new QueryWrapper<PicInfoEntity>().eq("product_id",id)).getPicUrl().length() != 0) {
+            if(picInfoService.getOne(new QueryWrapper<PicInfoEntity>().eq("product_id",id)) != null && picInfoService.getOne(new QueryWrapper<PicInfoEntity>().eq("product_id",id)).getPicUrl() != null && picInfoService.getOne(new QueryWrapper<PicInfoEntity>().eq("product_id",id)).getPicUrl().length() != 0) {
                 String name = picInfoService.getOne(new QueryWrapper<PicInfoEntity>().eq("product_id",id)).getPicUrl().substring(24);
                 File temp = new File("/www/wwwroot/farm/photo/" + name);
                 temp.delete();
@@ -129,7 +129,7 @@ public class PicInfoController {
             image.setProductId(Integer.valueOf(id));
             image.setPicUrl("http://aitmaker.cn:8008/" + fileName);
             picInfoService.saveOrUpdate(image, new QueryWrapper<PicInfoEntity>().eq("product_id", id));
-            return "上传成功";
+            return R.ok("上传成功");
         } catch (IOException e) {
             throw new IOException("上传文件失败", e);
         }

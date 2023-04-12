@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.internetplus.farm.user.dao.InfoDao;
+import com.internetplus.farm.user.entity.CuponEntity;
+import com.internetplus.farm.user.service.CuponService;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,7 +33,7 @@ import com.internetplus.common.utils.R;
 
 
 /**
- * 
+ *
  *
  * @author wrk
  * @email 1181153997@gmail.com
@@ -42,6 +44,9 @@ import com.internetplus.common.utils.R;
 public class InfoController {
     @Autowired
     private InfoService infoService;
+
+    @Autowired
+    private CuponService cuponService;
 
     /**
      * 列表
@@ -95,6 +100,30 @@ public class InfoController {
     }
 
     /**
+     * 获取种源点
+     */
+    @RequestMapping("/getPlant")
+    public R getPlant(@RequestParam(value = "userId")String userId) {
+        R r = new R();
+        InfoEntity info = infoService.getById(userId);
+        r.put("plantPoint",info.getPlantPoint());
+        return r;
+    }
+
+    /**
+     * 获取优惠券数量
+     */
+    @RequestMapping("/getCupon")
+    public R getCupon(@RequestParam(value = "userId")String userId) {
+        R r = new R();
+        QueryWrapper<CuponEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_info_id",userId);
+        List<CuponEntity> list = cuponService.list(wrapper);
+        r.put("num",list.size());
+        return r;
+    }
+
+    /**
      * 保存授权登录信息
      */
     @ResponseBody
@@ -105,8 +134,8 @@ public class InfoController {
         //微信官方提供获取openid的url
         String WX_URL = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
         //替换appid，appsecret，和code
-        String requestUrl = WX_URL.replace("APPID", "wxeac7d214bee8f104").//填写自己的appid
-            replace("SECRET", "1a23ed9eef81239886d96a45bd6c4352").replace("JSCODE", code).//填写自己的appsecret，
+        String requestUrl = WX_URL.replace("APPID", "wx7b3b6fb59174a7e2").//填写自己的appid
+            replace("SECRET", "13c2895a274513cbf0443ee5c076b2a0").replace("JSCODE", code).//填写自己的appsecret，
             replace("authorization_code", "authorization_code");
         JSONObject convertvalue=new JSONObject();
         //调用get方法
