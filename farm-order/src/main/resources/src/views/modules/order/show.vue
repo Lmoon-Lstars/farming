@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('order:show:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('order:show:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -26,25 +26,37 @@
         prop="orderId"
         header-align="center"
         align="center"
-        label="订单ID">
-      </el-table-column>
-      <el-table-column
-        prop="orderSn"
-        header-align="center"
-        align="center"
-        label="订单编号 yyyymmddnnnnnnnn">
-      </el-table-column>
-      <el-table-column
-        prop="supplierId"
-        header-align="center"
-        align="center"
-        label="供应商id">
+        label="订单表ID">
       </el-table-column>
       <el-table-column
         prop="customerId"
         header-align="center"
         align="center"
         label="下单人ID">
+      </el-table-column>
+      <el-table-column
+        prop="productName"
+        header-align="center"
+        align="center"
+        label="商品名称">
+      </el-table-column>
+      <el-table-column
+        prop="productCnt"
+        header-align="center"
+        align="center"
+        label="购买商品份数">
+      </el-table-column>
+      <el-table-column
+        prop="productPrice"
+        header-align="center"
+        align="center"
+        label="购买商品单价">
+      </el-table-column>
+      <el-table-column
+        prop="weight"
+        header-align="center"
+        align="center"
+        label="商品重量">
       </el-table-column>
       <el-table-column
         prop="shippingUser"
@@ -77,28 +89,10 @@
         label="收货人详细地址">
       </el-table-column>
       <el-table-column
-        prop="paymentMethod"
-        header-align="center"
-        align="center"
-        label="支付方式:1现金,2余额,3网银,4支付宝,5微信">
-      </el-table-column>
-      <el-table-column
         prop="orderMoney"
         header-align="center"
         align="center"
         label="订单金额">
-      </el-table-column>
-      <el-table-column
-        prop="districtMoney"
-        header-align="center"
-        align="center"
-        label="优惠金额">
-      </el-table-column>
-      <el-table-column
-        prop="shippingMoney"
-        header-align="center"
-        align="center"
-        label="运费金额">
       </el-table-column>
       <el-table-column
         prop="paymentMoney"
@@ -107,58 +101,22 @@
         label="支付金额">
       </el-table-column>
       <el-table-column
-        prop="shippingCompName"
-        header-align="center"
-        align="center"
-        label="快递公司名称">
-      </el-table-column>
-      <el-table-column
-        prop="shippingSn"
-        header-align="center"
-        align="center"
-        label="快递单号">
-      </el-table-column>
-      <el-table-column
-        prop="createTime"
-        header-align="center"
-        align="center"
-        label="下单时间">
-      </el-table-column>
-      <el-table-column
-        prop="shippingTime"
-        header-align="center"
-        align="center"
-        label="发货时间">
-      </el-table-column>
-      <el-table-column
-        prop="payTime"
-        header-align="center"
-        align="center"
-        label="支付时间">
-      </el-table-column>
-      <el-table-column
-        prop="receiveTime"
-        header-align="center"
-        align="center"
-        label="收货时间">
-      </el-table-column>
-      <el-table-column
         prop="orderStatus"
         header-align="center"
         align="center"
         label="订单状态(1未支付，2已支付，3已发货，4运输中，5已送达，6已完成)">
       </el-table-column>
       <el-table-column
-        prop="invoiceTitle"
+        prop="remark"
         header-align="center"
         align="center"
-        label="发票抬头">
+        label="备注">
       </el-table-column>
       <el-table-column
-        prop="modifiedTime"
+        prop="phoneNumber"
         header-align="center"
         align="center"
-        label="最后修改时间">
+        label="手机号码">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -187,7 +145,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './master-add-or-update'
+  import AddOrUpdate from './show-add-or-update'
   export default {
     data () {
       return {
@@ -214,7 +172,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/order/master/list'),
+          url: this.$http.adornUrl('/order/show/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -265,7 +223,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/order/master/delete'),
+            url: this.$http.adornUrl('/order/show/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

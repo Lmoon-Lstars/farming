@@ -12,6 +12,7 @@
         <result property="mobilePhone" column="mobile_phone"/>
         <result property="nickName" column="nick_name"/>
         <result property="registerTime" column="register_time"/>
+        <result property="userState" column="user_state"/>
     </resultMap>
 
 

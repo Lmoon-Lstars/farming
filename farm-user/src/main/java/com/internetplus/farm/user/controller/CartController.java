@@ -198,6 +198,9 @@ public class CartController {
         List<CartEntity> cartList = cartService.list(wrapper);
         for (CartEntity cart : cartList) {
             BigDecimal price = productService.info(cart.getProductId()).getPrice();
+            if(productService.info(cart.getProductId()).getIfShow() == 1) {
+                price = productService.info(cart.getProductId()).getDisPrice();
+            }
             BigDecimal num =new BigDecimal(String.valueOf(cart.getQuantity()));
             sum = sum.add(price.multiply(num));
         }

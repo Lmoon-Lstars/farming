@@ -115,6 +115,13 @@ public class MasterController {
     @RequestMapping("/cancel")
     public R cancel(@RequestParam(value = "orderId")String orderId) {
         MasterEntity master = masterService.getById(orderId);
+        Date now = new Date();
+        Date orderTime = master.getCreateTime();
+        long diff = now.getTime() - orderTime.getTime();
+        long min = diff / 1000 / 60;
+        if(min >= 30) {
+            return R.ok("距离下单时间已超过30分钟，不可退单");
+        }
         master.setOrderStatus(3);
         masterService.updateById(master);
         QueryWrapper<DetailEntity> queryWrapper = new QueryWrapper<>();
@@ -213,7 +220,7 @@ public class MasterController {
             detailService.save(detail);
         }
         userService.clear(userId);
-        return R.ok();
+        return R.ok("如需退单请在30分钟内进行");
     }
 
     /**

@@ -152,6 +152,7 @@ public class InfoController {
             info.setNickName(nickname);
             info.setOpenId(openid);
             info.setRegisterTime(new Date());
+            info.setUserState(1);
             infoService.save(info);
             list.add(info);
         } else {
@@ -161,11 +162,13 @@ public class InfoController {
         String nickName = list.get(0).getNickName();
         String url = list.get(0).getAvatarUrl();
         String phoneNumber = list.get(0).getMobilePhone();
+        int state = list.get(0).getUserState();
         R r = new R();
         r.put("userId",String.valueOf(userId));
         r.put("nickName",nickName);
         r.put("imgurl",url);
         r.put("phoneNumber",phoneNumber);
+        r.put("state",state);
         return r;
     }
     public  String GET(String url) {

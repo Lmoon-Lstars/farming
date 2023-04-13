@@ -52,7 +52,9 @@ public class InfoController {
    */
   @RequestMapping("/getDiscount")
   public List getDiscount() {
-    List<InfoEntity> products = infoService.list();
+    QueryWrapper wrapper = new QueryWrapper();
+    wrapper.eq("publish_status",1);
+    List<InfoEntity> products = infoService.list(wrapper);
     Date date = new Date();
     List<Map> res = new ArrayList<>();
     for (InfoEntity product : products) {
@@ -61,7 +63,9 @@ public class InfoController {
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("product_id",product.getProductId());
         map.put("id",String.valueOf(product.getProductId()));
-        map.put("picUrl",picInfoService.getOne(queryWrapper).getPicUrl());
+        if(picInfoService.getOne(queryWrapper) != null) {
+          map.put("picUrl",picInfoService.getOne(queryWrapper).getPicUrl());
+        }
         map.put("name",product.getProductName());
         map.put("price",String.valueOf(product.getPrice()));
         map.put("disPrice",String.valueOf(product.getDisPrice()));
@@ -81,10 +85,11 @@ public class InfoController {
   @RequestMapping("/showList")
   public R showList(@RequestParam(value = "typeCode")String typeCode) {
     R r = new R();
+    List<InfoEntity> productList = new ArrayList<>();
+    QueryWrapper queryWrapper = new QueryWrapper();
     if(!typeCode.equals("-1")) {
-      List<InfoEntity> productList = new ArrayList<>();
-      QueryWrapper queryWrapper = new QueryWrapper();
       queryWrapper.eq("type_code",Integer.valueOf(typeCode));
+      queryWrapper.eq("if_show",0);
       queryWrapper.eq("publish_status",1);
       productList = infoService.list(queryWrapper);
       List<Map> list = new ArrayList<>();
@@ -92,7 +97,9 @@ public class InfoController {
         Map<String,String> map = new HashMap<>();
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("product_id",info.getProductId());
-        map.put("picUrl",picInfoService.getOne(wrapper).getPicUrl());
+        if(picInfoService.getOne(wrapper) != null) {
+          map.put("picUrl",picInfoService.getOne(wrapper).getPicUrl());
+        }
         map.put("productId",String.valueOf(info.getProductId()));
         map.put("price",String.valueOf(info.getPrice()));
         map.put("weight",String.valueOf(info.getPerWeight()));
@@ -106,8 +113,7 @@ public class InfoController {
       }
       r.put("list",list);
     } else {
-      List<InfoEntity> productList = new ArrayList<>();
-      QueryWrapper queryWrapper = new QueryWrapper();
+
       queryWrapper.eq("if_show",1);
       queryWrapper.eq("publish_status",1);
       productList = infoService.list(queryWrapper);
@@ -116,7 +122,9 @@ public class InfoController {
         Map<String,String> map = new HashMap<>();
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("product_id",info.getProductId());
-        map.put("picUrl",picInfoService.getOne(wrapper).getPicUrl());
+        if(picInfoService.getOne(wrapper) != null) {
+          map.put("picUrl",picInfoService.getOne(wrapper).getPicUrl());
+        }
         map.put("productId",String.valueOf(info.getProductId()));
         map.put("price",String.valueOf(info.getPrice()));
         map.put("disPrice",String.valueOf(info.getDisPrice()));
@@ -135,15 +143,18 @@ public class InfoController {
   }
 
   /**
-   * 信息
+   * 信息（表单）
    */
-//  @RequestMapping("/info/{productId}")
-//  public R info(@PathVariable("productId") Integer productId) {
-//    InfoEntity info = infoService.getById(productId);
-//
-//    return R.ok().put("info", info);
-//  }
+  @RequestMapping("/info/{productId}")
+  public R forminfo(@PathVariable("productId") Integer productId) {
+    InfoEntity info = infoService.getById(productId);
 
+    return R.ok().put("info", info);
+  }
+
+  /**
+   *获取单个信息
+   */
   @RequestMapping("/info")
   public InfoEntity info(@RequestParam("productId") Integer productId) {
     InfoEntity info = infoService.getById(productId);
@@ -221,7 +232,7 @@ public class InfoController {
    * 模糊查询
    */
   @RequestMapping("/search")
-  public List search(@Param("productId") Integer productId,@Param("supplyNum")Integer supplyNum,@Param("ifShow") Integer ifShow) {
+  public R search(@Param("productId") Integer productId,@Param("supplyNum")Integer supplyNum,@Param("ifShow") Integer ifShow) {
     QueryWrapper<InfoEntity> queryWrapper = new QueryWrapper<>();
     if(productId != null) {
       queryWrapper.like("product_id",productId);
@@ -232,7 +243,10 @@ public class InfoController {
     if(supplyNum != null) {
       queryWrapper.like("supply_num",supplyNum);
     }
-    return infoService.getBaseMapper().selectList(queryWrapper);
+    List<InfoEntity> list = infoService.getBaseMapper().selectList(queryWrapper);
+    R r = new R();
+    r.put("list",list);
+    return r;
   }
 
   /**
