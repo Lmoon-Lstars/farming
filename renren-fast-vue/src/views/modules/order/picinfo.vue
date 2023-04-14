@@ -62,6 +62,7 @@
         prop="modifiedTime"
         header-align="center"
         align="center"
+        :formatter="toFormatDate"
         label="最后修改时间">
       </el-table-column>
       <el-table-column
@@ -114,6 +115,11 @@
       this.getDataList()
     },
     methods: {
+      toFormatDate (row, column, cellValue, index) {
+        console.log(cellValue)
+        let dates = new Date(cellValue).toJSON()
+        return new Date(+new Date(dates) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true

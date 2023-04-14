@@ -31,6 +31,8 @@
 </template>
 
 <script>
+  import {isDate} from '../../../utils/validate'
+
   export default {
     data () {
       return {
@@ -84,7 +86,7 @@
                 this.dataForm.isMaster = data.picInfo.isMaster
                 this.dataForm.picOrder = data.picInfo.picOrder
                 this.dataForm.picStatus = data.picInfo.picStatus
-                this.dataForm.modifiedTime = data.picInfo.modifiedTime
+                this.dataForm.modifiedTime = isDate(data.picInfo.modifiedTime)
               }
             })
           }

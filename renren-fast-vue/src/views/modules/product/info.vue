@@ -15,6 +15,7 @@
       border
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
+      :render-header="renderHeader"
       style="width: 100%;">
       <el-table-column
         type="selection"
@@ -86,6 +87,7 @@
         prop="description"
         header-align="center"
         align="center"
+        show-overflow-tooltip
         label="商品描述">
       </el-table-column>
       <el-table-column
@@ -122,13 +124,47 @@
         prop="indate"
         header-align="center"
         align="center"
+        :formatter="toFormatDate"
         label="商品录入时间">
       </el-table-column>
       <el-table-column
         prop="modifiedTime"
         header-align="center"
         align="center"
+        :formatter="toFormatDate"
         label="最后修改时间">
+      </el-table-column>
+      <el-table-column
+        prop="startTime"
+        header-align="center"
+        align="center"
+        :formatter="toFormatDate"
+        label="优惠开始时间">
+      </el-table-column>
+      <el-table-column
+        prop="endTime"
+        header-align="center"
+        align="center"
+        :formatter="toFormatDate"
+        label="优惠结束时间">
+      </el-table-column>
+      <el-table-column
+        prop="disPrice"
+        header-align="center"
+        align="center"
+        label="优惠价">
+      </el-table-column>
+      <el-table-column
+        prop="ifShow"
+        header-align="center"
+        align="center"
+        label="是否优惠">
+      </el-table-column>
+      <el-table-column
+        prop="typeCode"
+        header-align="center"
+        align="center"
+        label="产品类型">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -180,6 +216,11 @@
       this.getDataList()
     },
     methods: {
+      toFormatDate (row, column, cellValue, index) {
+        if (cellValue == null) return
+        let dates = new Date(cellValue).toJSON()
+        return new Date(+new Date(dates) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
@@ -253,6 +294,20 @@
             }
           })
         })
+      },
+      // 表头部重新渲染
+      renderHeader (h, {column, $index}) {
+        // 新建一个 span
+        let span = document.createElement('span')
+        // 设置表头名称
+        span.innerText = column.label
+        // 临时插入 document
+        document.body.appendChild(span)
+        // 重点：获取 span 最小宽度，设置当前列，注意这里加了 20，字段较多时还是有挤压，且渲染后的 div 内左右 padding 都是 10，所以 +20 。（可能还有边距/边框等值，需要根据实际情况加上）
+        column.minWidth = span.getBoundingClientRect().width + 20
+        // 移除 document 中临时的 span
+        document.body.removeChild(span)
+        return h('span', column.label)
       }
     }
   }
