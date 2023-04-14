@@ -61,10 +61,6 @@ export default {
         this.$refs['dataForm'].resetFields()
       })
     },
-    showfile () {
-      console.log('查看文件')
-      console.log(this.dataForm)
-    },
     // 上传文件时的改变时的方法
     uploadFile (file, fileList) {
       console.log('添加文件')
@@ -76,33 +72,18 @@ export default {
     },
     // 修改表单提交
     dataFormSubmit () {
-      /* formData格式提交： */
-      // let formData = new FormData()
-      // for (var key in this.dataForm) {
-      //   formData.append(key, this.dataForm[key])
-      //   console.log('追加了' + this.dataForm[key])
-      // }
-      // console.log('表单 id' + formData.getAll('productId'))
-      // console.log('表单 file' + formData.getAll('productPicFile'))
-      console.log('dataForm 图片列表')
-      console.log(this.dataForm.productPicFile)
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          console.log('发送请求 dataForm:')
-          console.log(this.dataForm)
           this.$http({
-            url: `https://aitmaker.cn/farmapi/product/picinfo/receive`,
+            url: this.$http.adornUrl(`/product/picinfo/receive`),
             method: 'post',
-            // data: formData,
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: this.$http.adornData({
-              'id': this.dataForm.productId || undefined,
+            data: this.$http.myFormData({
+              'id': this.dataForm.productId,
               'file': this.dataForm.productPicFile
-            }, true, 'application/x-www-form-urlencoded; charset=utf-8'
+            }, true, 'x-www-form-urlencoded'
             )
           }).then(({data}) => {
+            console.log(data)
             if (data && data.code === 0) {
               this.$message({
                 message: '操作成功',
@@ -115,15 +96,13 @@ export default {
               })
             } else {
               this.$message.error(data.msg)
-              console.log('数据格式' + data)
             }
+          }).catch(({data}) => {
+            console.log('数据格式错误')
+            console.log(data)
           })
         }
       })
-    },
-    // 新增表单提交——上传图片
-    picUpload () {
-
     },
     handleRemove (file, fileList) {
       console.log('删除文件')

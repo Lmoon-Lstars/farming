@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button type="primary" @click="addHandle()">新增</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
@@ -23,47 +23,16 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="productPicId"
+        prop="id"
         header-align="center"
         align="center"
-        label="商品图片ID">
+        label="自增id">
       </el-table-column>
       <el-table-column
-        prop="productId"
+        prop="imageurl"
         header-align="center"
         align="center"
-        label="商品ID">
-      </el-table-column>
-      <el-table-column
-        prop="picUrl"
-        header-align="center"
-        align="center"
-        label="图片URL">
-      </el-table-column>
-      <el-table-column
-        prop="isMaster"
-        header-align="center"
-        align="center"
-        label="是否主图:0.非主图1.主图">
-      </el-table-column>
-      <el-table-column
-        prop="picOrder"
-        header-align="center"
-        align="center"
-        label="图片排序">
-      </el-table-column>
-      <el-table-column
-        prop="picStatus"
-        header-align="center"
-        align="center"
-        label="图片是否有效:0无效 1有效">
-      </el-table-column>
-      <el-table-column
-        prop="modifiedTime"
-        header-align="center"
-        align="center"
-        :formatter="toFormatDate"
-        label="最后修改时间">
+        label="图片url">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -72,8 +41,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="updateHandle(scope.row.productPicId)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.productPicId)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -86,17 +55,13 @@
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <!-- 弹窗, 新增 -->
-    <pic-add-upload v-if="addVisible" ref="picAddUpload" ></pic-add-upload>
-    <!-- 弹窗, 修改 -->
-    <pic-update v-if="updateVisible" ref="picUpdate" @refreshDataList="getDataList"></pic-update>
+    <!-- 弹窗, 新增 / 修改 -->
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
 
 <script>
-  import picUpdate from './picinfo-update'
-  import picAddUpload from './pic-add-upload'
-
+  import AddOrUpdate from './banner-add-or-update'
   export default {
     data () {
       return {
@@ -109,28 +74,21 @@
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
-        addVisible: false,
-        updateVisible: false
+        addOrUpdateVisible: false
       }
     },
     components: {
-      picUpdate,
-      picAddUpload
+      AddOrUpdate
     },
     activated () {
       this.getDataList()
     },
     methods: {
-      toFormatDate (row, column, cellValue, index) {
-        if (cellValue == null) return
-        let dates = new Date(cellValue).toJSON()
-        return new Date(+new Date(dates) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
-      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/product/picinfo/list'),
+          url: this.$http.adornUrl('/user/banner/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -163,24 +121,17 @@
       selectionChangeHandle (val) {
         this.dataListSelections = val
       },
-      // 新增
-      addHandle (id) {
-        this.addVisible = true
+      // 新增 / 修改
+      addOrUpdateHandle (id) {
+        this.addOrUpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.picAddUpload.init(id)
-        })
-      },
-      // 修改
-      updateHandle (id) {
-        this.updateVisible = true
-        this.$nextTick(() => {
-          this.$refs.picUpdate.init(id)
+          this.$refs.addOrUpdate.init(id)
         })
       },
       // 删除
       deleteHandle (id) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.productPicId
+          return item.id
         })
         this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
           confirmButtonText: '确定',
@@ -188,7 +139,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/product/picinfo/delete'),
+            url: this.$http.adornUrl('/user/banner/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

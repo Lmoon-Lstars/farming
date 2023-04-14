@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('order:show:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('order:show:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -26,37 +26,25 @@
         prop="orderId"
         header-align="center"
         align="center"
-        label="订单表ID">
+        label="订单ID">
+      </el-table-column>
+      <el-table-column
+        prop="orderSn"
+        header-align="center"
+        align="center"
+        label="订单编号 yyyymmddnnnnnnnn">
+      </el-table-column>
+      <el-table-column
+        prop="supplierId"
+        header-align="center"
+        align="center"
+        label="供应商id">
       </el-table-column>
       <el-table-column
         prop="customerId"
         header-align="center"
         align="center"
         label="下单人ID">
-      </el-table-column>
-      <el-table-column
-        prop="productName"
-        header-align="center"
-        align="center"
-        label="商品名称">
-      </el-table-column>
-      <el-table-column
-        prop="productCnt"
-        header-align="center"
-        align="center"
-        label="购买商品份数">
-      </el-table-column>
-      <el-table-column
-        prop="productPrice"
-        header-align="center"
-        align="center"
-        label="购买商品单价">
-      </el-table-column>
-      <el-table-column
-        prop="weight"
-        header-align="center"
-        align="center"
-        label="商品重量">
       </el-table-column>
       <el-table-column
         prop="shippingUser"
@@ -89,10 +77,28 @@
         label="收货人详细地址">
       </el-table-column>
       <el-table-column
+        prop="paymentMethod"
+        header-align="center"
+        align="center"
+        label="支付方式:1现金,2余额,3网银,4支付宝,5微信">
+      </el-table-column>
+      <el-table-column
         prop="orderMoney"
         header-align="center"
         align="center"
         label="订单金额">
+      </el-table-column>
+      <el-table-column
+        prop="districtMoney"
+        header-align="center"
+        align="center"
+        label="优惠金额">
+      </el-table-column>
+      <el-table-column
+        prop="shippingMoney"
+        header-align="center"
+        align="center"
+        label="运费金额">
       </el-table-column>
       <el-table-column
         prop="paymentMoney"
@@ -101,22 +107,63 @@
         label="支付金额">
       </el-table-column>
       <el-table-column
+        prop="shippingCompName"
+        header-align="center"
+        align="center"
+        label="快递公司名称">
+      </el-table-column>
+      <el-table-column
+        prop="shippingSn"
+        header-align="center"
+        align="center"
+        label="快递单号">
+      </el-table-column>
+      <el-table-column
+        prop="createTime"
+        header-align="center"
+        align="center"
+        :formatter="toFormatDate"
+        label="下单时间">
+      </el-table-column>
+      <el-table-column
+        prop="shippingTime"
+        header-align="center"
+        align="center"
+        :formatter="toFormatDate"
+        label="发货时间">
+      </el-table-column>
+      <el-table-column
+        prop="payTime"
+        header-align="center"
+        align="center"
+        :formatter="toFormatDate"
+        label="支付时间">
+      </el-table-column>
+      <el-table-column
+        prop="receiveTime"
+        header-align="center"
+        align="center"
+        :formatter="toFormatDate"
+        label="收货时间">
+      </el-table-column>
+      <el-table-column
         prop="orderStatus"
         header-align="center"
         align="center"
         label="订单状态(1未支付，2已支付，3已发货，4运输中，5已送达，6已完成)">
       </el-table-column>
       <el-table-column
-        prop="remark"
+        prop="invoiceTitle"
         header-align="center"
         align="center"
-        label="备注">
+        label="发票抬头">
       </el-table-column>
       <el-table-column
-        prop="phoneNumber"
+        prop="modifiedTime"
         header-align="center"
         align="center"
-        label="手机号码">
+        :formatter="toFormatDate"
+        label="最后修改时间">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -145,103 +192,109 @@
 </template>
 
 <script>
-  import AddOrUpdate from './show-add-or-update'
-  export default {
-    data () {
-      return {
-        dataForm: {
-          key: ''
-        },
-        dataList: [],
-        pageIndex: 1,
-        pageSize: 10,
-        totalPage: 0,
-        dataListLoading: false,
-        dataListSelections: [],
-        addOrUpdateVisible: false
-      }
+import AddOrUpdate from './master-add-or-update'
+
+export default {
+  data () {
+    return {
+      dataForm: {
+        key: ''
+      },
+      dataList: [],
+      pageIndex: 1,
+      pageSize: 10,
+      totalPage: 0,
+      dataListLoading: false,
+      dataListSelections: [],
+      addOrUpdateVisible: false
+    }
+  },
+  components: {
+    AddOrUpdate
+  },
+  activated () {
+    this.getDataList()
+  },
+  methods: {
+    toFormatDate (row, column, cellValue, index) {
+      if (cellValue == null) return
+      let dates = new Date(cellValue).toJSON()
+      return new Date(+new Date(dates) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
     },
-    components: {
-      AddOrUpdate
+    // 获取数据列表
+    getDataList () {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/order/master/list'),
+        method: 'get',
+        params: this.$http.adornParams({
+          'page': this.pageIndex,
+          'limit': this.pageSize,
+          'key': this.dataForm.key
+        })
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.dataList = data.page.list
+          this.totalPage = data.page.totalCount
+        } else {
+          this.dataList = []
+          this.totalPage = 0
+        }
+        this.dataListLoading = false
+      })
     },
-    activated () {
+    // 每页数
+    sizeChangeHandle (val) {
+      this.pageSize = val
+      this.pageIndex = 1
       this.getDataList()
     },
-    methods: {
-      // 获取数据列表
-      getDataList () {
-        this.dataListLoading = true
+    // 当前页
+    currentChangeHandle (val) {
+      this.pageIndex = val
+      this.getDataList()
+    },
+    // 多选
+    selectionChangeHandle (val) {
+      this.dataListSelections = val
+    },
+    // 新增 / 修改
+    addOrUpdateHandle (id) {
+      this.addOrUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs.addOrUpdate.init(id)
+      })
+    },
+    // 删除
+    deleteHandle (id) {
+      var ids = id ? [id] : this.dataListSelections.map(item => {
+        return item.orderId
+      })
+      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/order/show/list'),
-          method: 'get',
-          params: this.$http.adornParams({
-            'page': this.pageIndex,
-            'limit': this.pageSize,
-            'key': this.dataForm.key
-          })
+          url: this.$http.adornUrl('/order/master/delete'),
+          method: 'post',
+          data: this.$http.adornData(ids, false)
         }).then(({data}) => {
           if (data && data.code === 0) {
-            this.dataList = data.page.list
-            this.totalPage = data.page.totalCount
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
           } else {
-            this.dataList = []
-            this.totalPage = 0
+            this.$message.error(data.msg)
           }
-          this.dataListLoading = false
         })
-      },
-      // 每页数
-      sizeChangeHandle (val) {
-        this.pageSize = val
-        this.pageIndex = 1
-        this.getDataList()
-      },
-      // 当前页
-      currentChangeHandle (val) {
-        this.pageIndex = val
-        this.getDataList()
-      },
-      // 多选
-      selectionChangeHandle (val) {
-        this.dataListSelections = val
-      },
-      // 新增 / 修改
-      addOrUpdateHandle (id) {
-        this.addOrUpdateVisible = true
-        this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
-        })
-      },
-      // 删除
-      deleteHandle (id) {
-        var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.orderId
-        })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/order/show/delete'),
-            method: 'post',
-            data: this.$http.adornData(ids, false)
-          }).then(({data}) => {
-            if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList()
-                }
-              })
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        })
-      }
+      })
     }
   }
+}
 </script>

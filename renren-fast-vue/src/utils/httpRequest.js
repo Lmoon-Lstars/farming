@@ -72,5 +72,22 @@ http.adornData = (data = {}, openDefaultData = true, contentType = 'json') => {
   data = openDefaultData ? merge(defaults, data) : data
   return contentType === 'json' ? JSON.stringify(data) : qs.stringify(data)
 }
+// : 'x-www-form-urlencoded' ? qs.stringify(data)
+
+let myformdata = function (data = {}) {
+  let formData = new FormData()
+  for (var key in data) {
+    formData.append(key, data[key])
+  }
+  return formData
+}
+
+http.myFormData = (data = {}, openDefaultData = true, contentType = 'json') => {
+  var defaults = {
+    't': new Date().getTime()
+  }
+  data = openDefaultData ? merge(defaults, data) : data
+  return contentType === 'json' ? JSON.stringify(data) : myformdata(data)
+}
 
 export default http

@@ -29,3 +29,30 @@ export function isPhone (s) {
 export function isURL (s) {
   return /^http[s]?:\/\/.*/.test(s)
 }
+
+/**
+ * 处理时间
+ * @param date
+ * @returns {string}
+ */
+export function isDate (date) {
+  if (date == null) return ''
+  let dates = new Date(date).toJSON()
+  return new Date(+new Date(dates) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+}
+
+/**
+ * 设置table的固定滚筒条
+ */
+export function setHeight () {
+  const offsetTop = window.innerHeight - this.$refs.table.$el.offsetTop - 210
+  const offsetBodyHeight = document.querySelector('.el-table__body').offsetHeight
+  console.log(offsetTop, offsetBodyHeight)
+  if (this.tableList.length && offsetBodyHeight < offsetTop) {
+    this.tableHeight = offsetBodyHeight + 75
+  } else if (!this.tableList.length) {
+    this.tableHeight = null
+  } else {
+    this.tableHeight = offsetTop
+  }
+}
