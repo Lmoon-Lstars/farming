@@ -182,11 +182,11 @@ export default {
       console.log(data)
     },
     click (val) {
-        this.$nextTick((val) => {
-          console.log('改变了select')
-          // console.log(val.target.id)
-          console.log(val)
-        })
+      this.$nextTick((val) => {
+        console.log('改变了select')
+        // console.log(val.target.id)
+        console.log(val)
+      })
     },
     toFormatDate (row, column, cellValue, index) {
       if (cellValue == null) return
