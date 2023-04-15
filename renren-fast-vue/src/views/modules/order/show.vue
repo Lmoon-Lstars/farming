@@ -3,16 +3,26 @@
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="search()">
       <el-form-item><span>订单号</span></el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.orderId" placeholder="请输入订单号" clearable @clear="getDataList()"></el-input>
+        <el-input v-model="dataForm.orderId" placeholder="请输入订单号" clearable @clear="search()"></el-input>
+      </el-form-item>
+      <el-form-item><span>顾客姓名</span></el-form-item>
+      <el-form-item>
+        <el-input v-model="dataForm.shipperName" placeholder="请输入顾客姓名" clearable @clear="search()"></el-input>
+      </el-form-item>
+      <el-form-item><span>产品名称</span></el-form-item>
+      <el-form-item>
+        <el-input v-model="dataForm.productName" placeholder="请输入产品名称" clearable @clear="search()"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="search()">查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="resetSearch()">重置</el-button>
       </el-form-item>
     </el-form>
     <el-table
       :data="dataList"
       border
-      v-loading="dataListLoading"
       height="550"
       style="width: 100%;">
       <el-table-column
@@ -47,6 +57,7 @@
       </el-table-column>
       <el-table-column
         prop="createTime"
+        :render-header="renderHeader"
         header-align="center"
         align="center"
         :formatter="toFormatDate"
@@ -66,6 +77,7 @@
       </el-table-column>
       <el-table-column
         prop="phoneNumber"
+        :render-header="renderHeader"
         header-align="center"
         align="center"
         label="顾客电话号码">
@@ -90,6 +102,7 @@
       </el-table-column>
       <el-table-column
         prop="productPrice"
+        :render-header="renderHeader"
         header-align="center"
         align="center"
         label="产品每份价格">
@@ -143,13 +156,13 @@
         width="150"
         label="修改订单状态">
         <template slot-scope="scope">
-          <el-select v-bind:value="scope.row.orderStatus" placeholder="请选择" @change="click">
+          <el-select v-bind:value="scope.row.orderStatus" placeholder="请选择"
+                     @change="changeOrderStatus($event,scope.row.orderId)">
             <el-option
               v-for="item in options"
               :key="item.id"
               :label="item.op"
-              :value="item.id"
-              @click.native="changeGateway(item)">
+              :value="item.id">
             </el-option>
           </el-select>
         </template>
@@ -163,9 +176,10 @@ export default {
   data () {
     return {
       dataForm: {
-        orderId: ''
+        orderId: '',
+        shipperName: '',
+        productName: ''
       },
-      dataListLoading: false,
       dataList: [],
       options: [
         {id: 1, op: '未配送'},
@@ -178,16 +192,42 @@ export default {
     this.getDataList()
   },
   methods: {
-    changeGateway (data) {
-      console.log(data)
+    renderHeader (h, {column, $index}) {
+      let span = document.createElement('span')
+      // 设置表头名称
+      span.innerText = column.label
+      // 临时插入 document
+      document.body.appendChild(span)
+      console.log(span.getBoundingClientRect().width)
+      // 重点：获取 span 最小宽度，设置当前列，注意这里加了 20，字段较多时还是有挤压，且渲染后的 div 内左右 padding 都是 10，所以 +20 。（可能还有边距/边框等值，需要根据实际情况加上）
+      column.minWidth = span.getBoundingClientRect().width + 50
+      // 移除 document 中临时的 span
+      document.body.removeChild(span)
+      return h('span', column.label)
     },
-    click (val) {
-      this.$nextTick((val) => {
-        console.log('改变了select')
-        // console.log(val.target.id)
-        console.log(val)
+    // 修改订单状态
+    changeOrderStatus (val, id) {
+      this.$http({
+        url: this.$http.adornUrl(`/order/master/finish`),
+        method: 'post',
+        data: this.$http.myFormData({
+          'orderId': id,
+          'orderStatus': val
+        }, true, 'x-www-form-urlencoded')
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.$message({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500
+          })
+          this.$nextTick(() => {
+            this.getDataList()
+          })
+        }
       })
     },
+    // 格式化日期
     toFormatDate (row, column, cellValue, index) {
       if (cellValue == null) return
       let dates = new Date(cellValue).toJSON()
@@ -205,27 +245,33 @@ export default {
           this.dataList = data.list
         } else {
           this.dataList = []
-          alert('搜索无结果')
         }
-        this.dataListLoading = false
       })
+    },
+    // 重置搜索输入框
+    resetSearch () {
+      this.dataForm.orderId = ''
+      this.dataForm.shipperName = ''
+      this.dataForm.productName = ''
+      this.getDataList()
     },
     // 根据订单id搜索
     search () {
-      if (this.dataForm.orderId) {
-        this.$http({
-          url: this.$http.adornUrl(`/order/show/search?orderId=${this.dataForm.orderId}`),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({data}) => {
-          if (data && data.code === 0) {
-            this.dataList = data.list
-          } else {
-            this.dataList = []
-            alert('搜索无结果')
-          }
+      this.$http({
+        url: this.$http.adornUrl(`/order/show/search`),
+        method: 'get',
+        params: this.$http.adornParams({
+          'orderId': this.dataForm.orderId,
+          'shipperName': this.dataForm.shipperName,
+          'productName': this.dataForm.productName
         })
-      }
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.dataList = data.list
+        } else {
+          this.dataList = []
+        }
+      })
     }
   }
 }
