@@ -156,7 +156,7 @@
         width="150"
         label="修改订单状态">
         <template slot-scope="scope">
-          <el-select v-bind:value="scope.row.orderStatus" placeholder="请选择"
+          <el-select v-bind:value="scope.row.orderStatus"
                      @change="changeOrderStatus($event,scope.row.orderId)">
             <el-option
               v-for="item in options"
@@ -192,6 +192,7 @@ export default {
     this.getDataList()
   },
   methods: {
+    // 表头撑开
     renderHeader (h, {column, $index}) {
       let span = document.createElement('span')
       // 设置表头名称

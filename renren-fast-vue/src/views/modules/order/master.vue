@@ -32,7 +32,7 @@
         prop="orderSn"
         header-align="center"
         align="center"
-        label="订单编号 yyyymmddnnnnnnnn">
+        label="订单编号">
       </el-table-column>
       <el-table-column
         prop="supplierId"
