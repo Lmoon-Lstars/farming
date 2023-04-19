@@ -5,17 +5,12 @@
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
              label-width="200px">
-      <el-form-item label="商品编码" prop="productCode">
-        <el-input v-model="dataForm.productCode" placeholder="商品编码"></el-input>
-      </el-form-item>
+
       <el-form-item label="商品名称" prop="productName">
         <el-input v-model="dataForm.productName" placeholder="商品名称"></el-input>
       </el-form-item>
-      <el-form-item label="商品销售价格" prop="price">
+      <el-form-item label="销售价格" prop="price">
         <el-input v-model="dataForm.price" placeholder="商品销售价格"></el-input>
-      </el-form-item>
-      <el-form-item label="商品供应商id" prop="supplierId">
-        <el-input v-model="dataForm.supplierId" placeholder="商品供应商id"></el-input>
       </el-form-item>
       <el-form-item label="免费供应份数" prop="freeNum">
         <el-input v-model="dataForm.freeNum" placeholder="免费供应份数"></el-input>
@@ -26,39 +21,56 @@
       <el-form-item label="每份重量（克）" prop="perWeight">
         <el-input v-model="dataForm.perWeight" placeholder="每份重量（克）"></el-input>
       </el-form-item>
-      <el-form-item label="商品描述" prop="description">
-        <el-input v-model="dataForm.description" placeholder="商品描述"></el-input>
-      </el-form-item>
-      <el-form-item label="上下架状态:0下架1上架" prop="publishStatus">
-        <el-input v-model="dataForm.publishStatus" placeholder="上下架状态:0下架1上架"></el-input>
-      </el-form-item>
-      <el-form-item label="审核状态:0未审核,1已审核" prop="auditStatus">
-        <el-input v-model="dataForm.auditStatus" placeholder="审核状态:0未审核,1已审核"></el-input>
-      </el-form-item>
       <el-form-item label="产地" prop="place">
         <el-input v-model="dataForm.place" placeholder="产地"></el-input>
       </el-form-item>
       <el-form-item label="品种" prop="breed">
         <el-input v-model="dataForm.breed" placeholder="品种"></el-input>
       </el-form-item>
-      <el-form-item label="是否为特产:0不是，1是" prop="isSpecial">
-        <el-input v-model="dataForm.isSpecial" placeholder="是否为特产:0不是，1是"></el-input>
+      <el-form-item label="产品类型" prop="typeCode">
+        <el-select v-model="dataForm.typeCode" placeholder="请选择产品类型">
+          <el-option
+            v-for="item in typeCodeOption"
+            :key="item.id"
+            :label="item.op"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="是否优惠" prop="ifShow">
-        <el-input v-model="dataForm.ifShow" placeholder="是否优惠"></el-input>
+      <el-form-item label="上下架" prop="publishStatus">
+        <el-switch v-model="dataForm.publishStatus"></el-switch>
+      </el-form-item>
+      <el-form-item label="审核通过" prop="auditStatus">
+        <el-switch v-model="dataForm.auditStatus"></el-switch>
+      </el-form-item>
+      <el-form-item label="特产" prop="isSpecial">
+        <el-switch v-model="dataForm.isSpecial"></el-switch>
+      </el-form-item>
+      <el-form-item label="优惠" prop="ifShow">
+        <el-switch v-model="dataForm.ifShow"></el-switch>
       </el-form-item>
       <el-form-item label="优惠价" prop="disPrice">
         <el-input v-model="dataForm.disPrice" placeholder="请填写优惠价"></el-input>
       </el-form-item>
-      <el-form-item label="优惠开始时间" prop="startTime">
-        <el-input v-model="dataForm.startTime" placeholder="请选择优惠开始时间"></el-input>
+      <el-form-item label="优惠活动时间">
+        <el-col :span="11">
+          <el-form-item prop="startTime">
+            <el-date-picker type="datetime" placeholder="选择日期" v-model="dataForm.startTime"
+                            style="width: 100%;"></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="2" align="middle">-</el-col>
+        <el-col :span="11">
+          <el-form-item prop="endTime">
+            <el-date-picker type="datetime" placeholder="选择日期" v-model="dataForm.endTime" style="width: 100%;"></el-date-picker>
+          </el-form-item>
+        </el-col>
       </el-form-item>
-      <el-form-item label="优惠结束时间" prop="endTime">
-        <el-input v-model="dataForm.endTime" placeholder="请选择优惠结束时间"></el-input>
+      <el-form-item label="商品描述" prop="description">
+        <el-input type="textarea" v-model="dataForm.description" placeholder="商品描述"></el-input>
       </el-form-item>
-      <el-form-item label="产品类型" prop="typeCode">
-        <el-input v-model="dataForm.typeCode" placeholder="请选择产品类型"></el-input>
-      </el-form-item>
+
+
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -95,6 +107,17 @@ export default {
         endTime: '',
         typeCode: ''
       },
+      typeCodeOption: [
+        {id: -1, op: '优惠商品'},
+        {id: 1, op: '热带果香'},
+        {id: 2, op: '异域佳果'},
+        {id: 3, op: '鸿渐柑香'},
+        {id: 4, op: '柿落梨香'},
+        {id: 5, op: '瑶台琼果'},
+        {id: 6, op: '穗果莓芸'},
+        {id: 7, op: '藤影垂坐'},
+        {id: 8, op: '食语琳琅'}
+      ],
       dataRule: {
         // productCode: [
         //   {required: true, message: '商品编码不能为空', trigger: 'blur'}
