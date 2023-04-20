@@ -5,6 +5,8 @@ import com.internetplus.farm.order.dao.ShowDao;
 import com.internetplus.farm.order.entity.DetailEntity;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,22 +47,38 @@ public class ShowController {
     @RequestMapping("/list")
     public R list(){
         List<ShowEntity> list = showDao.generateList();
+        Collections.sort(list,new Comparator<ShowEntity>() {
+            @Override
+            public int compare(ShowEntity o1, ShowEntity o2) {
+                return o2.getOrderId() - o1.getOrderId();
+            }
+        });
 
         return R.ok().put("list", list);
     }
-
 
     /**
      * 订单查询
      */
     @RequestMapping("/search")
-    public R search(@Param("orderId")Integer orderId) {
-        List<ShowEntity> list = new ArrayList<>();
-        for (ShowEntity showEntity : showDao.generateList()) {
-            if(showEntity.getOrderId().equals(orderId)) {
-                list.add(showEntity);
-            }
+    public R search(@Param("orderId")String orderId,@Param("shipperName")String shipperName,@Param("productName")String productName) {
+        List<ShowEntity> list = showDao.generateList();
+        if(orderId != null) {
+            list.removeIf(
+                showEntity -> !(String.valueOf(showEntity.getOrderId()).contains(orderId)));
         }
+        if(shipperName != null) {
+            list.removeIf(showEntity -> !(showEntity.getShippingUser().contains(shipperName)));
+        }
+        if(productName != null) {
+            list.removeIf(showEntity -> !(showEntity.getProductName().contains(productName)));
+        }
+        Collections.sort(list,new Comparator<ShowEntity>() {
+            @Override
+            public int compare(ShowEntity o1, ShowEntity o2) {
+                return o2.getOrderId() - o1.getOrderId();
+            }
+        });
         R r = new R();
         r.put("list",list);
         return r;

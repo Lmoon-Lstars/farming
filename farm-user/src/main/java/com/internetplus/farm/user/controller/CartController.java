@@ -112,6 +112,9 @@ public class CartController {
         if(num != 0 && productService.info(Integer.valueOf(productId)).getSupplyNum() <= list.get(0).getQuantity()) {
             return R.ok("库存不足，请选购其他商品");
         }
+        if(num != 0 && productService.info(Integer.valueOf(productId)).getIfShow() == 1) {
+            return R.ok("优惠商品仅限购买一份");
+        }
         if(num == 0 && productService.info(Integer.valueOf(productId)).getSupplyNum() == 0) {
             return R.ok("库存不足，请选购其他商品");
         }

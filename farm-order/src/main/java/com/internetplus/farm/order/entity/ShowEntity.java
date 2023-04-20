@@ -9,8 +9,8 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 
- * 
+ *
+ *
  * @author wrk
  * @email 1181153997@gmail.com
  * @date 2023-04-12 15:23:24
@@ -85,5 +85,9 @@ public class ShowEntity implements Serializable {
 	 * 手机号码
 	 */
 	private String phoneNumber;
+	/**
+	 * 下单时间
+	 */
+	private Date createTime;
 
 }

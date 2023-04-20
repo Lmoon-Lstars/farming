@@ -95,6 +95,17 @@ public class MasterController {
     }
 
     /**
+     * 订单完成（管理系统）
+     */
+    @RequestMapping("/finish")
+    public R finish(@RequestParam("orderId")Integer orderId,@RequestParam("orderStatus")Integer orderStatus) {
+        MasterEntity master = masterService.getBaseMapper().selectById(orderId);
+        master.setOrderStatus(orderStatus);
+        masterService.updateById(master);
+        return R.ok();
+    }
+
+    /**
      * 删除
      */
     @RequestMapping("/delete")
@@ -220,7 +231,10 @@ public class MasterController {
             detailService.save(detail);
         }
         userService.clear(userId);
-        return R.ok("如需退单请在30分钟内进行");
+        R r = new R();
+        r.put("code",200);
+        r.put("msg","如需退单请在30分钟内进行");
+        return r;
     }
 
     /**

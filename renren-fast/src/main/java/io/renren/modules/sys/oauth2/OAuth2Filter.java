@@ -55,14 +55,16 @@ public class OAuth2Filter extends AuthenticatingFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         //获取请求token，如果token不存在，直接返回401
+        System.out.println(request.toString());
         String token = getRequestToken((HttpServletRequest) request);
+        System.out.println(((HttpServletRequest) request).getRequestURL().toString());
 
         if(StringUtils.isBlank(token)){
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
             httpResponse.setHeader("Access-Control-Allow-Origin", HttpContextUtils.getOrigin());
 
-            String json = new Gson().toJson(R.error(HttpStatus.SC_UNAUTHORIZED, "invalid token"));
+            String json = new Gson().toJson(R.error(HttpStatus.SC_UNAUTHORIZED, ((HttpServletRequest) request).getRequestURL().toString()));
 
             httpResponse.getWriter().print(json);
 

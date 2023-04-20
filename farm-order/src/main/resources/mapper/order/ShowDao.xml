@@ -21,6 +21,7 @@
         <result property="orderStatus" column="order_status"/>
         <result property="remark" column="remark"/>
         <result property="phoneNumber" column="phone_number"/>
+        <result property="createTime" column="create_time"/>
     </resultMap>
 
 

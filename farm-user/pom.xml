@@ -56,6 +56,14 @@
       <artifactId>jjwt</artifactId>
       <version>0.7.0</version>
     </dependency>
+
+    <!-- openfeign 客户端 -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
+      <version>2.2.6.RELEASE</version>
+    </dependency>
+
   </dependencies>
   <dependencyManagement>
     <dependencies>

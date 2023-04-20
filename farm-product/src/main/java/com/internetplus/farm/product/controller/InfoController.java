@@ -59,6 +59,8 @@ public class InfoController {
     List<Map> res = new ArrayList<>();
     for (InfoEntity product : products) {
       if(date.after(product.getStartTime()) && date.before(product.getEndTime())) {
+        product.setIfShow(1);
+        infoService.updateInfo(product);
         Map<String,String> map = new HashMap<>();
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("product_id",product.getProductId());
@@ -74,6 +76,9 @@ public class InfoController {
         map.put("startTime",product.getStartTime().toString());
         map.put("endTime",product.getEndTime().toString());
         res.add(map);
+      } else {
+        product.setIfShow(0);
+        infoService.updateInfo(product);
       }
     }
     return res;
@@ -232,8 +237,11 @@ public class InfoController {
    * 模糊查询
    */
   @RequestMapping("/search")
-  public R search(@Param("productId") Integer productId,@Param("supplyNum")Integer supplyNum,@Param("ifShow") Integer ifShow) {
+  public R search(@Param("productName") String productName, @Param("productId") Integer productId,@Param("supplyNum")Integer supplyNum,@Param("ifShow") Integer ifShow) {
     QueryWrapper<InfoEntity> queryWrapper = new QueryWrapper<>();
+    if(productName != null) {
+      queryWrapper.like("product_name",productName);
+    }
     if(productId != null) {
       queryWrapper.like("product_id",productId);
     }
