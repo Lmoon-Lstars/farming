@@ -20,10 +20,11 @@ import lombok.Data;
 public class ShowEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@TableId
+	private Integer showId;
 	/**
 	 * 订单表ID
 	 */
-	@TableId
 	private Integer orderId;
 	/**
 	 * 下单人ID

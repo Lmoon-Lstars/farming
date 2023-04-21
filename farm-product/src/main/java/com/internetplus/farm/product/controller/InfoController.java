@@ -1,11 +1,14 @@
 package com.internetplus.farm.product.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.internetplus.common.utils.PageUtils;
+import com.internetplus.common.utils.Query;
 import com.internetplus.common.utils.R;
 import com.internetplus.farm.product.entity.InfoEntity;
 import com.internetplus.farm.product.service.InfoService;
 import com.internetplus.farm.product.service.PicInfoService;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -42,9 +45,26 @@ public class InfoController {
    * 列表（后台管理系统）
    */
   @RequestMapping("/list")
-  public R list(@RequestParam Map<String, Object> params) {
-    PageUtils page = infoService.queryPage(params);
-    return R.ok().put("page", page);
+  public R list(@Param("productName") String productName, @Param("productId") Integer productId,@Param("supplyNum")Integer supplyNum,@Param("ifShow") Integer ifShow,@RequestParam Map<String, Object> params) {
+    QueryWrapper<InfoEntity> queryWrapper = new QueryWrapper<>();
+    if(productName != null) {
+      queryWrapper.like("product_name",productName);
+    }
+    if(productId != null) {
+      queryWrapper.like("product_id",productId);
+    }
+    if(ifShow != null) {
+      queryWrapper.like("if_show",ifShow);
+    }
+    if(supplyNum != null) {
+      queryWrapper.like("supply_num",supplyNum);
+    }
+    IPage<InfoEntity> page = infoService.page(
+        new Query<InfoEntity>().getPage(params),
+        queryWrapper
+    );
+    PageUtils pageUtils = new PageUtils(page);
+    return R.ok().put("page", pageUtils);
   }
 
   /**
@@ -187,6 +207,26 @@ public class InfoController {
   }
 
   /**
+   * 快速修改
+   */
+  @RequestMapping("/updateQuickly")
+  public void updateQuickly(@RequestParam("productId")Integer productId,@RequestParam("productName")String productName,
+      @RequestParam("price") BigDecimal price,@RequestParam("disPrice")BigDecimal disPrice,
+      @RequestParam("publishStatus")Integer publishStatus,@RequestParam("startTime")Date startTime,
+      @RequestParam("endTime")Date endTime) {
+    InfoEntity infoEntity = infoService.getBaseMapper().selectById(productId);
+    infoEntity.setProductName(productName);
+    infoEntity.setPrice(price);
+    infoEntity.setDisPrice(disPrice);
+    infoEntity.setPublishStatus(publishStatus);
+    infoEntity.setStartTime(startTime);
+    infoEntity.setEndTime(endTime);
+    infoService.updateInfo(infoEntity);
+  }
+
+
+
+  /**
    * 删除
    */
   @RequestMapping("/delete")
@@ -233,29 +273,7 @@ public class InfoController {
     infoService.updateInfo(info);
   }
 
-  /**
-   * 模糊查询
-   */
-  @RequestMapping("/search")
-  public R search(@Param("productName") String productName, @Param("productId") Integer productId,@Param("supplyNum")Integer supplyNum,@Param("ifShow") Integer ifShow) {
-    QueryWrapper<InfoEntity> queryWrapper = new QueryWrapper<>();
-    if(productName != null) {
-      queryWrapper.like("product_name",productName);
-    }
-    if(productId != null) {
-      queryWrapper.like("product_id",productId);
-    }
-    if(ifShow != null) {
-      queryWrapper.like("if_show",ifShow);
-    }
-    if(supplyNum != null) {
-      queryWrapper.like("supply_num",supplyNum);
-    }
-    List<InfoEntity> list = infoService.getBaseMapper().selectList(queryWrapper);
-    R r = new R();
-    r.put("list",list);
-    return r;
-  }
+
 
   /**
    * 根据产品名进行模糊查询
@@ -275,6 +293,7 @@ public class InfoController {
       wrapper.eq("product_id",info.getProductId());
       map.put("picUrl",picInfoService.getOne(wrapper).getPicUrl());
       map.put("productId",String.valueOf(info.getProductId()));
+      map.put("productName",String.valueOf(info.getProductName()));
       map.put("price",String.valueOf(info.getPrice()));
       map.put("weight",String.valueOf(info.getPerWeight()));
       map.put("description",info.getDescription());

@@ -4,13 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.internetplus.farm.order.client.ProductService;
 import com.internetplus.farm.order.client.UserService;
 import com.internetplus.farm.order.entity.DetailEntity;
+import com.internetplus.farm.order.entity.SaleEntity;
+import com.internetplus.farm.order.entity.ShowEntity;
 import com.internetplus.farm.order.service.DetailService;
+import com.internetplus.farm.order.service.SaleService;
+import com.internetplus.farm.order.service.ShowService;
 import com.internetplus.farm.user.entity.AddressEntity;
 import com.internetplus.farm.user.entity.CartEntity;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +57,12 @@ public class MasterController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ShowService showService;
+
+    @Autowired
+    private SaleService saleService;
 
     /**
      * 列表
@@ -141,6 +152,9 @@ public class MasterController {
         for (DetailEntity detail : list) {
             productService.sell(String.valueOf(detail.getProductId()),String.valueOf(-detail.getProductCnt()));
         }
+        QueryWrapper<SaleEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("order_id",orderId);
+        saleService.remove(wrapper);
         return R.ok("取消成功");
     }
 
@@ -226,9 +240,43 @@ public class MasterController {
             detail.setProductId(cart.getProductId());
             detail.setProductName(productService.info(cart.getProductId()).getProductName());
             detail.setProductCnt(cart.getQuantity());
-            detail.setProductPrice(productService.info(cart.getProductId()).getPrice());
+            if(productService.info(cart.getProductId()).getIfShow() == 1) {
+                detail.setProductPrice(productService.info(cart.getProductId()).getDisPrice());
+            } else {
+                detail.setProductPrice(productService.info(cart.getProductId()).getPrice());
+            }
             detail.setWeight(Double.valueOf(productService.info(cart.getProductId()).getPerWeight() * cart.getQuantity()));
             detailService.save(detail);
+            ShowEntity showEntity = new ShowEntity();
+            showEntity.setOrderId(master.getOrderId());
+            showEntity.setCustomerId(Integer.valueOf(userId));
+            showEntity.setProductName(detail.getProductName());
+            showEntity.setProductCnt(detail.getProductCnt());
+            showEntity.setProductPrice(detail.getProductPrice());
+            showEntity.setWeight(detail.getWeight());
+            showEntity.setShippingUser(master.getShippingUser());
+            showEntity.setProvince(master.getProvince());
+            showEntity.setCity(master.getCity());
+            showEntity.setDistrict(master.getDistrict());
+            showEntity.setAddress(master.getAddress());
+            showEntity.setOrderMoney(master.getOrderMoney());
+            showEntity.setPaymentMoney(master.getPaymentMoney());
+            showEntity.setOrderStatus(master.getOrderStatus());
+            showEntity.setRemark(master.getRemark());
+            showEntity.setPhoneNumber(master.getPhoneNumber());
+            showEntity.setCreateTime(master.getCreateTime());
+            showService.save(showEntity);
+            SaleEntity saleEntity = new SaleEntity();
+            saleEntity.setOrderId(master.getOrderId());
+            saleEntity.setProductName(detail.getProductName());
+            saleEntity.setProductCnt(detail.getProductCnt());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(master.getCreateTime());
+            saleEntity.setYear(calendar.get(Calendar.YEAR));
+            saleEntity.setMonth(calendar.get(Calendar.MONTH) + 1);
+            saleEntity.setDay(calendar.get(Calendar.DATE));
+            saleEntity.setSalePrice(detail.getProductPrice().multiply(new BigDecimal(detail.getProductCnt())));
+            saleService.save(saleEntity);
         }
         userService.clear(userId);
         R r = new R();

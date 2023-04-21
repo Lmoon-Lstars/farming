@@ -1,8 +1,11 @@
 package com.internetplus.farm.order.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.internetplus.common.utils.Query;
 import com.internetplus.farm.order.dao.ShowDao;
 import com.internetplus.farm.order.entity.DetailEntity;
+import com.internetplus.farm.product.entity.InfoEntity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,43 +48,27 @@ public class ShowController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(){
-        List<ShowEntity> list = showDao.generateList();
-        Collections.sort(list,new Comparator<ShowEntity>() {
-            @Override
-            public int compare(ShowEntity o1, ShowEntity o2) {
-                return o2.getOrderId() - o1.getOrderId();
-            }
-        });
-
-        return R.ok().put("list", list);
-    }
-
-    /**
-     * 订单查询
-     */
-    @RequestMapping("/search")
-    public R search(@Param("orderId")String orderId,@Param("shipperName")String shipperName,@Param("productName")String productName) {
-        List<ShowEntity> list = showDao.generateList();
+    public R list(@Param("orderId")String orderId,@Param("shipperName")String shipperName,@Param("productName")String productName,@Param("orderStatus")Integer orderStatus,@RequestParam Map<String, Object> params) {
+        QueryWrapper<ShowEntity> queryWrapper = new QueryWrapper<>();
         if(orderId != null) {
-            list.removeIf(
-                showEntity -> !(String.valueOf(showEntity.getOrderId()).contains(orderId)));
+            queryWrapper.like("order_id",orderId);
         }
         if(shipperName != null) {
-            list.removeIf(showEntity -> !(showEntity.getShippingUser().contains(shipperName)));
+            queryWrapper.like("shipping_user",shipperName);
         }
         if(productName != null) {
-            list.removeIf(showEntity -> !(showEntity.getProductName().contains(productName)));
+            queryWrapper.like("product_name",productName);
         }
-        Collections.sort(list,new Comparator<ShowEntity>() {
-            @Override
-            public int compare(ShowEntity o1, ShowEntity o2) {
-                return o2.getOrderId() - o1.getOrderId();
-            }
-        });
-        R r = new R();
-        r.put("list",list);
-        return r;
+        if(orderStatus != null) {
+            queryWrapper.like("order_status",orderStatus);
+        }
+        queryWrapper.orderByDesc("create_time");
+        IPage<ShowEntity> page = showService.page(
+            new Query<ShowEntity>().getPage(params),
+            queryWrapper
+        );
+        PageUtils pageUtils = new PageUtils(page);
+        return R.ok().put("page", pageUtils);
     }
 
 }

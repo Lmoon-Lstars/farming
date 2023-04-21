@@ -5,6 +5,7 @@
 
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.internetplus.farm.order.entity.ShowEntity" id="showMap">
+        <result property="showId" column="show_id"/>
         <result property="orderId" column="order_id"/>
         <result property="customerId" column="customer_id"/>
         <result property="productName" column="product_name"/>
