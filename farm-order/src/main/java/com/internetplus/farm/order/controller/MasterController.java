@@ -113,6 +113,13 @@ public class MasterController {
         MasterEntity master = masterService.getBaseMapper().selectById(orderId);
         master.setOrderStatus(orderStatus);
         masterService.updateById(master);
+        QueryWrapper<ShowEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("order_id",orderId);
+        List<ShowEntity> showEntity = showService.list(queryWrapper);
+        for (ShowEntity entity : showEntity) {
+            entity.setOrderStatus(orderStatus);
+        }
+        showService.updateBatchById(showEntity);
         return R.ok();
     }
 
@@ -137,6 +144,13 @@ public class MasterController {
     @RequestMapping("/cancel")
     public R cancel(@RequestParam(value = "orderId")String orderId) {
         MasterEntity master = masterService.getById(orderId);
+        QueryWrapper<ShowEntity> wrapper1 = new QueryWrapper<>();
+        wrapper1.eq("order_id",orderId);
+        List<ShowEntity> showEntity = showService.list(wrapper1);
+        for (ShowEntity entity : showEntity) {
+            entity.setOrderStatus(3);
+        }
+        showService.updateBatchById(showEntity);
         Date now = new Date();
         Date orderTime = master.getCreateTime();
         long diff = now.getTime() - orderTime.getTime();
@@ -146,6 +160,7 @@ public class MasterController {
         }
         master.setOrderStatus(3);
         masterService.updateById(master);
+
         QueryWrapper<DetailEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("order_id",orderId);
         List<DetailEntity> list = detailService.list(queryWrapper);
