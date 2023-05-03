@@ -1,6 +1,8 @@
 package com.internetplus.farm.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.internetplus.farm.user.entity.CuponModuleEntity;
+import com.internetplus.farm.user.service.CuponModuleService;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +24,7 @@ import com.internetplus.common.utils.R;
 
 
 /**
- * 
+ *
  *
  * @author wrk
  * @email 1181153997@gmail.com
@@ -33,6 +35,9 @@ import com.internetplus.common.utils.R;
 public class CuponController {
     @Autowired
     private CuponService cuponService;
+
+    @Autowired
+    private CuponModuleService cuponModuleService;
 
     /**
      * 列表
@@ -100,22 +105,24 @@ public class CuponController {
      */
     @RequestMapping("/listCupon")
     public List listCupon(@RequestParam("userId")String userId, @RequestParam("status")String status) {
-        //0:未开始，1:过期，2:有效
+        //0:未开始，1:过期，2:有效,3:已使用
         Date date = new Date();
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("user_info_id",userId);
         List<CuponEntity> cuponList = cuponService.list(queryWrapper);
         for (CuponEntity cuponEntity : cuponList) {
-            if(cuponEntity.getStartTime().after(date)) { //未到开始时间
-                cuponEntity.setCuponStatu(0);
-            } else {
-                if(cuponEntity.getEndTime().before(date)) { //过期
-                    cuponEntity.setCuponStatu(1);
+            if(cuponEntity.getCuponStatu() != 3) {
+                if(cuponEntity.getStartTime().after(date)) { //未到开始时间
+                    cuponEntity.setCuponStatu(0);
                 } else {
-                    cuponEntity.setCuponStatu(2);
+                    if(cuponEntity.getEndTime().before(date)) { //过期
+                        cuponEntity.setCuponStatu(1);
+                    } else {
+                        cuponEntity.setCuponStatu(2);
+                    }
                 }
+                cuponService.updateById(cuponEntity);
             }
-            cuponService.updateById(cuponEntity);
         }
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("user_info_id",userId);
@@ -123,5 +130,46 @@ public class CuponController {
         List<CuponEntity> list = cuponService.list(wrapper);
         return list;
     }
+
+    /**
+     * 优惠券已使用
+     */
+    @RequestMapping("/user/cupon/deleteCupon")
+    public void deleteCupon(@RequestParam("cuponId")Integer cuponId) {
+        CuponEntity cupon = cuponService.getById(cuponId);
+        cupon.setCuponStatu(3);
+        cuponService.updateById(cupon);
+    }
+
+    /**
+     * 领取优惠券
+     */
+    @RequestMapping("/giveOut")
+    public R giveOut(@RequestParam("userId")Integer userId,@RequestParam("moduleId")Integer moduleId) {
+        QueryWrapper<CuponEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("cupon_type",moduleId);
+        List<CuponEntity> list = cuponService.list(wrapper);
+        if(list.size() > 0) {
+            return R.error("已经领取过该优惠券了");
+        }
+        QueryWrapper<CuponModuleEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",moduleId);
+        CuponModuleEntity module = cuponModuleService.getOne(queryWrapper);
+        CuponEntity cupon = new CuponEntity();
+        cupon.setCuponName(module.getCuponName());
+        cupon.setMinPoint(module.getMinPoint());
+        cupon.setCuponAmount(module.getCuponAmount());
+        cupon.setStartTime(module.getStartTime());
+        cupon.setEndTime(module.getEndTime());
+        cupon.setUserInfoId(userId);
+        cupon.setCuponType(moduleId);
+        cupon.setCuponRules(module.getCuponRules());
+        cuponService.save(cupon);
+        cuponService.update();
+        R r = new R();
+        r.put("cupon",cupon);
+        return r;
+    }
+
 
 }

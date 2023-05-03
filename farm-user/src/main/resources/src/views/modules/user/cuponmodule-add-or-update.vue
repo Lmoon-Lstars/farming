@@ -4,31 +4,22 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="折扣券" prop="cuponName">
+    <el-form-item label="" prop="cuponName">
       <el-input v-model="dataForm.cuponName" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="使用门槛" prop="minPoint">
+    <el-form-item label="" prop="minPoint">
       <el-input v-model="dataForm.minPoint" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="数量" prop="cuponAmount">
+    <el-form-item label="" prop="cuponAmount">
       <el-input v-model="dataForm.cuponAmount" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="起始时间" prop="startTime">
+    <el-form-item label="" prop="startTime">
       <el-input v-model="dataForm.startTime" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="结束时间" prop="endTime">
+    <el-form-item label="" prop="endTime">
       <el-input v-model="dataForm.endTime" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="所属用户ID" prop="userInfoId">
-      <el-input v-model="dataForm.userInfoId" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="有效性" prop="cuponStatu">
-      <el-input v-model="dataForm.cuponStatu" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="类型" prop="cuponType">
-      <el-input v-model="dataForm.cuponType" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="使用规则" prop="cuponRules">
+    <el-form-item label="" prop="cuponRules">
       <el-input v-model="dataForm.cuponRules" placeholder=""></el-input>
     </el-form-item>
     </el-form>
@@ -51,9 +42,6 @@
           cuponAmount: '',
           startTime: '',
           endTime: '',
-          userInfoId: '',
-          cuponStatu: '',
-          cuponType: '',
           cuponRules: ''
         },
         dataRule: {
@@ -72,15 +60,6 @@
           endTime: [
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
-          userInfoId: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-          ],
-          cuponStatu: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-          ],
-          cuponType: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-          ],
           cuponRules: [
             { required: true, message: '不能为空', trigger: 'blur' }
           ]
@@ -95,20 +74,17 @@
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/user/cupon/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/user/cuponmodule/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.cuponName = data.cupon.cuponName
-                this.dataForm.minPoint = data.cupon.minPoint
-                this.dataForm.cuponAmount = data.cupon.cuponAmount
-                this.dataForm.startTime = data.cupon.startTime
-                this.dataForm.endTime = data.cupon.endTime
-                this.dataForm.userInfoId = data.cupon.userInfoId
-                this.dataForm.cuponStatu = data.cupon.cuponStatu
-                this.dataForm.cuponType = data.cupon.cuponType
-                this.dataForm.cuponRules = data.cupon.cuponRules
+                this.dataForm.cuponName = data.cuponModule.cuponName
+                this.dataForm.minPoint = data.cuponModule.minPoint
+                this.dataForm.cuponAmount = data.cuponModule.cuponAmount
+                this.dataForm.startTime = data.cuponModule.startTime
+                this.dataForm.endTime = data.cuponModule.endTime
+                this.dataForm.cuponRules = data.cuponModule.cuponRules
               }
             })
           }
@@ -119,7 +95,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/user/cupon/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/user/cuponmodule/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
@@ -128,9 +104,6 @@
                 'cuponAmount': this.dataForm.cuponAmount,
                 'startTime': this.dataForm.startTime,
                 'endTime': this.dataForm.endTime,
-                'userInfoId': this.dataForm.userInfoId,
-                'cuponStatu': this.dataForm.cuponStatu,
-                'cuponType': this.dataForm.cuponType,
                 'cuponRules': this.dataForm.cuponRules
               })
             }).then(({data}) => {

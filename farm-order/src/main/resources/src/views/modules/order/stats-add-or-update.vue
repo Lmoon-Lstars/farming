@@ -1,11 +1,14 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.statsId ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="图片url" prop="imageurl" >
-      <el-input v-model="dataForm.imageurl" placeholder="图片url"></el-input>
+    <el-form-item label="" prop="customerId">
+      <el-input v-model="dataForm.customerId" placeholder=""></el-input>
+    </el-form-item>
+    <el-form-item label="" prop="orderNum">
+      <el-input v-model="dataForm.orderNum" placeholder=""></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -21,30 +24,35 @@
       return {
         visible: false,
         dataForm: {
-          id: 0,
-          imageurl: ''
+          statsId: 0,
+          customerId: '',
+          orderNum: ''
         },
         dataRule: {
-          imageurl: [
-            { required: true, message: '图片url不能为空', trigger: 'blur' }
+          customerId: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+          ],
+          orderNum: [
+            { required: true, message: '不能为空', trigger: 'blur' }
           ]
         }
       }
     },
     methods: {
       init (id) {
-        this.dataForm.id = id || 0
+        this.dataForm.statsId = id || 0
         this.visible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
-          if (this.dataForm.id) {
+          if (this.dataForm.statsId) {
             this.$http({
-              url: this.$http.adornUrl(`/user/banner/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/order/stats/info/${this.dataForm.statsId}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.imageurl = data.banner.imageurl
+                this.dataForm.customerId = data.stats.customerId
+                this.dataForm.orderNum = data.stats.orderNum
               }
             })
           }
@@ -55,11 +63,12 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/user/banner/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/order/stats/${!this.dataForm.statsId ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
-                'id': this.dataForm.id || undefined,
-                'imageurl': this.dataForm.imageurl
+                'statsId': this.dataForm.statsId || undefined,
+                'customerId': this.dataForm.customerId,
+                'orderNum': this.dataForm.orderNum
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

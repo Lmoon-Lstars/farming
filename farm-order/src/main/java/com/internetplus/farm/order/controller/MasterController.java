@@ -6,11 +6,14 @@ import com.internetplus.farm.order.client.UserService;
 import com.internetplus.farm.order.entity.DetailEntity;
 import com.internetplus.farm.order.entity.SaleEntity;
 import com.internetplus.farm.order.entity.ShowEntity;
+import com.internetplus.farm.order.entity.StatsEntity;
 import com.internetplus.farm.order.service.DetailService;
 import com.internetplus.farm.order.service.SaleService;
 import com.internetplus.farm.order.service.ShowService;
+import com.internetplus.farm.order.service.StatsService;
 import com.internetplus.farm.user.entity.AddressEntity;
 import com.internetplus.farm.user.entity.CartEntity;
+import com.internetplus.farm.user.entity.InfoEntity;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,6 +66,9 @@ public class MasterController {
 
     @Autowired
     private SaleService saleService;
+
+    @Autowired
+    private StatsService statsService;
 
     /**
      * 列表
@@ -147,10 +153,6 @@ public class MasterController {
         QueryWrapper<ShowEntity> wrapper1 = new QueryWrapper<>();
         wrapper1.eq("order_id",orderId);
         List<ShowEntity> showEntity = showService.list(wrapper1);
-        for (ShowEntity entity : showEntity) {
-            entity.setOrderStatus(3);
-        }
-        showService.updateBatchById(showEntity);
         Date now = new Date();
         Date orderTime = master.getCreateTime();
         long diff = now.getTime() - orderTime.getTime();
@@ -158,9 +160,12 @@ public class MasterController {
         if(min >= 30) {
             return R.ok("距离下单时间已超过30分钟，不可退单");
         }
+        for (ShowEntity entity : showEntity) {
+            entity.setOrderStatus(3);
+        }
+        showService.updateBatchById(showEntity);
         master.setOrderStatus(3);
         masterService.updateById(master);
-
         QueryWrapper<DetailEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("order_id",orderId);
         List<DetailEntity> list = detailService.list(queryWrapper);
@@ -170,6 +175,12 @@ public class MasterController {
         QueryWrapper<SaleEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("order_id",orderId);
         saleService.remove(wrapper);
+        QueryWrapper<StatsEntity> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("customer_id",masterService.getById(orderId).getCustomerId());
+        StatsEntity stats = statsService.getOne(queryWrapper1);
+        stats.setOrderNum(stats.getOrderNum() - 1);
+        statsService.updateById(stats);
+        userService.setPoint(master.getCustomerId(),String.valueOf(-1*(int)(Math.floor(master.getPaymentMoney().doubleValue()/20))));
         return R.ok("取消成功");
     }
 
@@ -242,6 +253,7 @@ public class MasterController {
         if(!cuponId.equals("null")) {
             cuponMoney = userService.getCuponInfo(cuponId).getCuponAmount();
             master.setDistrictMoney(new BigDecimal(userService.getCuponInfo(cuponId).getCuponAmount().toString()));
+            userService.deleteCupon(Integer.parseInt(cuponId));
         }
         master.setShippingMoney(new BigDecimal(shippingMoney));
         master.setPaymentMoney(master.getOrderMoney().subtract(new BigDecimal(String.valueOf(cuponMoney))).add(master.getShippingMoney()));
@@ -293,7 +305,21 @@ public class MasterController {
             saleEntity.setSalePrice(detail.getProductPrice().multiply(new BigDecimal(detail.getProductCnt())));
             saleService.save(saleEntity);
         }
+        QueryWrapper<StatsEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("customer_id",userId);
+        StatsEntity stats = new StatsEntity();
+        if(statsService.list(queryWrapper).size() == 0) {
+            stats.setCustomerId(Integer.parseInt(userId));
+            stats.setOrderNum(1);
+            statsService.save(stats);
+        } else {
+            stats = statsService.getOne(queryWrapper);
+            stats.setOrderNum(stats.getOrderNum() + 1);
+            statsService.updateById(stats);
+        }
         userService.clear(userId);
+        String point = String.valueOf((int)(Math.floor(Double.parseDouble(sum)/20)));
+        userService.setPoint(Integer.parseInt(userId),point);
         R r = new R();
         r.put("code",200);
         r.put("msg","如需退单请在30分钟内进行");

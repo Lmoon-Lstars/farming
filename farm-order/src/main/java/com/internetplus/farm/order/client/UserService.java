@@ -17,9 +17,15 @@ public interface UserService {
   @RequestMapping("user/cupon/getInfo")
   public CuponEntity getCuponInfo(@RequestParam("cuponId")String cuponId);
 
+  @RequestMapping("/user/cupon/deleteCupon")
+  public void deleteCupon(@RequestParam("cuponId")Integer cuponId);
+
   @RequestMapping("user/cart/getCartInfo")
   public List<CartEntity> getCartInfo(@RequestParam("userId")String userId);
 
   @RequestMapping("user/cart/clear")
   public R clear(@RequestParam(value = "userId")String userId);
+
+  @RequestMapping("user/info/setPoint")
+  public void setPoint(@RequestParam(value = "userId")Integer userId,@RequestParam(value = "plantPoint")String point);
 }

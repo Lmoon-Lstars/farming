@@ -127,7 +127,7 @@ public class PicInfoController {
             // 将上传的文件名和ID保存到数据库中
             PicInfoEntity image = new PicInfoEntity();
             image.setProductId(Integer.valueOf(id));
-            image.setPicUrl("http://aitmaker.cn:8008/" + fileName);
+            image.setPicUrl("https://aitmaker.cn/farmPhoto/" + fileName);
             picInfoService.saveOrUpdate(image, new QueryWrapper<PicInfoEntity>().eq("product_id", id));
             return R.ok("上传成功");
         } catch (IOException e) {

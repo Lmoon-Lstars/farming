@@ -59,6 +59,7 @@ public class InfoController {
     if(supplyNum != null) {
       queryWrapper.like("supply_num",supplyNum);
     }
+    queryWrapper.orderByDesc("product_id");
     IPage<InfoEntity> page = infoService.page(
         new Query<InfoEntity>().getPage(params),
         queryWrapper
@@ -194,16 +195,16 @@ public class InfoController {
   public R save(@RequestBody InfoEntity info) {
     infoService.saveInfo(info);
 
-    return R.ok();
+    return R.ok().put("id",info.getProductId());
   }
 
   /**
    * 修改
    */
   @RequestMapping("/update")
-  public void update(@RequestBody InfoEntity info) {
-
+  public R update(@RequestBody InfoEntity info) {
     infoService.updateInfo(info);
+    return R.ok();
   }
 
   /**
@@ -231,33 +232,18 @@ public class InfoController {
    */
   @RequestMapping("/delete")
   public R delete(@RequestBody Integer[] productIds) {
-    picInfoService.removeByIds(Arrays.asList(productIds));
+    infoService.removeByIds(Arrays.asList(productIds));
     return R.ok();
   }
 
   /**
    * 下架
    */
-  @RequestMapping("/down")
-  public R down(@RequestBody Integer[] productIds) {
-    for (Integer productId : productIds) {
-      InfoEntity info = infoService.getBaseMapper().selectById(productId);
-      info.setPublishStatus(0);
-      infoService.updateInfo(info);
-    }
-    return R.ok();
-  }
-
-  /**
-   *上架
-   */
-  @RequestMapping("/up")
-  public R up(@RequestBody Integer[] productIds) {
-    for (Integer productId : productIds) {
-      InfoEntity info = infoService.getBaseMapper().selectById(productId);
-      info.setPublishStatus(1);
-      infoService.updateInfo(info);
-    }
+  @RequestMapping("/upAndDown")
+  public R upAndDown(@RequestParam(value = "productId")Integer productId,@RequestParam(value = "publishStatus")Integer publishStatus) {
+    InfoEntity info = infoService.getBaseMapper().selectById(productId);
+    info.setPublishStatus(publishStatus);
+    infoService.updateInfo(info);
     return R.ok();
   }
 

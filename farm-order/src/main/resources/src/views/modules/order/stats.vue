@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('order:stats:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('order:stats:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -15,7 +15,6 @@
       border
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
-      height="550"
       style="width: 100%;">
       <el-table-column
         type="selection"
@@ -24,46 +23,22 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="userInfoId"
+        prop="statsId"
         header-align="center"
         align="center"
-        label="ID">
+        label="">
       </el-table-column>
       <el-table-column
-        prop="avatarUrl"
+        prop="customerId"
         header-align="center"
         align="center"
-        label="头像URL">
+        label="">
       </el-table-column>
       <el-table-column
-        prop="openId"
+        prop="orderNum"
         header-align="center"
         align="center"
-        label="用户辨识字段">
-      </el-table-column>
-      <el-table-column
-        prop="plantPoint"
-        header-align="center"
-        align="center"
-        label="种源点">
-      </el-table-column>
-      <el-table-column
-        prop="mobilePhone"
-        header-align="center"
-        align="center"
-        label="电话号码">
-      </el-table-column>
-      <el-table-column
-        prop="nickName"
-        header-align="center"
-        align="center"
-        label="昵称">
-      </el-table-column>
-      <el-table-column
-        prop="registerTime"
-        header-align="center"
-        align="center"
-        label="注册时间">
+        label="">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -72,8 +47,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.userInfoId)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.userInfoId)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.statsId)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.statsId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -92,7 +67,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './info-add-or-update'
+  import AddOrUpdate from './stats-add-or-update'
   export default {
     data () {
       return {
@@ -119,7 +94,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/user/info/list'),
+          url: this.$http.adornUrl('/order/stats/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -162,7 +137,7 @@
       // 删除
       deleteHandle (id) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.userInfoId
+          return item.statsId
         })
         this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
           confirmButtonText: '确定',
@@ -170,7 +145,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/user/info/delete'),
+            url: this.$http.adornUrl('/order/stats/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

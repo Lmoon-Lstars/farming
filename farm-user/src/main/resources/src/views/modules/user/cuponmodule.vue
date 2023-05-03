@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('user:cuponmodule:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('user:cuponmodule:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -15,7 +15,6 @@
       border
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
-      height="550"
       style="width: 100%;">
       <el-table-column
         type="selection"
@@ -27,13 +26,43 @@
         prop="id"
         header-align="center"
         align="center"
-        label="自增id">
+        label="">
       </el-table-column>
       <el-table-column
-        prop="imageurl"
+        prop="cuponName"
         header-align="center"
         align="center"
-        label="图片url">
+        label="">
+      </el-table-column>
+      <el-table-column
+        prop="minPoint"
+        header-align="center"
+        align="center"
+        label="">
+      </el-table-column>
+      <el-table-column
+        prop="cuponAmount"
+        header-align="center"
+        align="center"
+        label="">
+      </el-table-column>
+      <el-table-column
+        prop="startTime"
+        header-align="center"
+        align="center"
+        label="">
+      </el-table-column>
+      <el-table-column
+        prop="endTime"
+        header-align="center"
+        align="center"
+        label="">
+      </el-table-column>
+      <el-table-column
+        prop="cuponRules"
+        header-align="center"
+        align="center"
+        label="">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -62,7 +91,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './banner-add-or-update'
+  import AddOrUpdate from './cuponmodule-add-or-update'
   export default {
     data () {
       return {
@@ -89,7 +118,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/user/banner/list'),
+          url: this.$http.adornUrl('/user/cuponmodule/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -140,7 +169,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/user/banner/delete'),
+            url: this.$http.adornUrl('/user/cuponmodule/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

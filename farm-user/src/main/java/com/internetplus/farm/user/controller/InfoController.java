@@ -124,6 +124,19 @@ public class InfoController {
     }
 
     /**
+     * 根据id修改用户的种源点
+     */
+    @RequestMapping("/setPoint")
+    public void setPoint(@RequestParam(value = "userId")Integer userId,@RequestParam(value = "plantPoint")String point) {
+        QueryWrapper<InfoEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_info_id",userId);
+        InfoEntity info = infoService.getOne(wrapper);
+        String plantPoint = String.valueOf(Integer.parseInt(info.getPlantPoint()) + Integer.parseInt(point));
+        info.setPlantPoint(plantPoint);
+        infoService.updateById(info);
+    }
+
+    /**
      * 保存授权登录信息
      */
     @ResponseBody
