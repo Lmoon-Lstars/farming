@@ -19,7 +19,7 @@ for (let i = 0; i < Math.floor(Math.random() * 10 + 1); i++) {
 export function list () {
   return {
     // isOpen: false,
-    url: '/sys/user/list',
+    url: '/renren-fast/sys/user/list',
     type: 'get',
     data: {
       'msg': 'success',
@@ -39,7 +39,7 @@ export function list () {
 export function info () {
   return {
     // isOpen: false,
-    url: '/sys/user/info',
+    url: '/renren-fast/sys/user/info',
     type: 'get',
     data: {
       'msg': 'success',
@@ -53,7 +53,7 @@ export function info () {
 export function updatePassword () {
   return {
     // isOpen: false,
-    url: '/sys/user/password',
+    url: '/renren-fast/sys/user/password',
     type: 'post',
     data: {
       'msg': 'success',
@@ -66,7 +66,7 @@ export function updatePassword () {
 export function add () {
   return {
     // isOpen: false,
-    url: '/sys/user/save',
+    url: '/renren-fast/sys/user/save',
     type: 'post',
     data: {
       'msg': 'success',
@@ -79,7 +79,7 @@ export function add () {
 export function update () {
   return {
     // isOpen: false,
-    url: '/sys/user/update',
+    url: '/renren-fast/sys/user/update',
     type: 'post',
     data: {
       'msg': 'success',
@@ -92,7 +92,7 @@ export function update () {
 export function del () {
   return {
     // isOpen: false,
-    url: '/sys/user/delete',
+    url: '/renren-fast/sys/user/delete',
     type: 'post',
     data: {
       'msg': 'success',

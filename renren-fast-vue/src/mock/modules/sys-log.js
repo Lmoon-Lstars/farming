@@ -34,7 +34,7 @@ for (let i = 0; i < Math.floor(Math.random() * 10 + 1); i++) {
 export function list () {
   return {
     // isOpen: false,
-    url: '/sys/log/list',
+    url: '/renren-fast/sys/log/list',
     type: 'get',
     data: {
       'msg': 'success',
@@ -54,7 +54,7 @@ export function list () {
 export function scheduleList () {
   return {
     // isOpen: false,
-    url: '/sys/scheduleLog/list',
+    url: '/renren-fast/sys/scheduleLog/list',
     type: 'get',
     data: {
       'msg': 'success',
@@ -75,7 +75,7 @@ export function scheduleInfo () {
   let name = Mock.Random.name()
   return {
     // isOpen: false,
-    url: '/sys/scheduleLog/info',
+    url: '/renren-fast/sys/scheduleLog/info',
     type: 'get',
     data: {
       'msg': 'success',

@@ -15,7 +15,7 @@ for (let i = 0; i < Math.floor(Math.random() * 10 + 1); i++) {
 export function list () {
   return {
     // isOpen: false,
-    url: '/sys/config/list',
+    url: '/renren-fast/sys/config/list',
     type: 'get',
     data: {
       'msg': 'success',
@@ -35,7 +35,7 @@ export function list () {
 export function info () {
   return {
     // isOpen: false,
-    url: '/sys/config/info',
+    url: '/renren-fast/sys/config/info',
     type: 'get',
     data: {
       'msg': 'success',
@@ -49,7 +49,7 @@ export function info () {
 export function add () {
   return {
     // isOpen: false,
-    url: '/sys/config/save',
+    url: '/renren-fast/sys/config/save',
     type: 'post',
     data: {
       'msg': 'success',
@@ -62,7 +62,7 @@ export function add () {
 export function update () {
   return {
     // isOpen: false,
-    url: '/sys/config/update',
+    url: '/renren-fast/sys/config/update',
     type: 'post',
     data: {
       'msg': 'success',
@@ -75,7 +75,7 @@ export function update () {
 export function del () {
   return {
     // isOpen: false,
-    url: '/sys/config/delete',
+    url: '/renren-fast/sys/config/delete',
     type: 'post',
     data: {
       'msg': 'success',

@@ -34,3 +34,6 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
+
+// 用于兄弟组件之间通信
+export const eventBus = new Vue()

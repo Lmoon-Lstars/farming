@@ -503,7 +503,7 @@ var navDataList = [
 export function nav () {
   return {
     // isOpen: false,
-    url: '/sys/menu/nav',
+    url: '/renren-fast/sys/menu/nav',
     type: 'get',
     data: {
       'msg': 'success',
@@ -552,7 +552,7 @@ export function nav () {
 export function list () {
   return {
     // isOpen: false,
-    url: '/sys/menu/list',
+    url: '/renren-fast/sys/menu/list',
     type: 'get',
     data: dataList
   }
@@ -564,7 +564,7 @@ export function select () {
   dataList = dataList.concat(dataList[0].list)
   return {
     // isOpen: false,
-    url: '/sys/menu/select',
+    url: '/renren-fast/sys/menu/select',
     type: 'get',
     data: {
       'msg': 'success',
@@ -578,7 +578,7 @@ export function select () {
 export function info () {
   return {
     // isOpen: false,
-    url: '/sys/menu/info',
+    url: '/renren-fast/sys/menu/info',
     type: 'get',
     data: {
       'msg': 'success',
@@ -592,7 +592,7 @@ export function info () {
 export function add () {
   return {
     // isOpen: false,
-    url: '/sys/menu/save',
+    url: '/renren-fast/sys/menu/save',
     type: 'post',
     data: {
       'msg': 'success',
@@ -605,7 +605,7 @@ export function add () {
 export function update () {
   return {
     // isOpen: false,
-    url: '/sys/menu/update',
+    url: '/renren-fast/sys/menu/update',
     type: 'post',
     data: {
       'msg': 'success',
@@ -618,7 +618,7 @@ export function update () {
 export function del () {
   return {
     // isOpen: false,
-    url: '/sys/menu/delete',
+    url: '/renren-fast/sys/menu/delete',
     type: 'post',
     data: {
       'msg': 'success',

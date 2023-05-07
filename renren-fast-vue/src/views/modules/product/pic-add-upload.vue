@@ -63,12 +63,7 @@ export default {
     },
     // 上传文件时的改变时的方法
     uploadFile (file, fileList) {
-      console.log('添加文件')
-      console.log(file.raw)
       this.dataForm.productPicFile = file.raw  // 拿到文件的信息
-      console.log('表单文件 productPicFile')
-      console.log('proId ' + this.dataForm.productId)
-      console.log(this.dataForm.productPicFile)
     },
     // 修改表单提交
     dataFormSubmit () {
@@ -109,7 +104,6 @@ export default {
       console.log(file, fileList)
     },
     handlePictureCardPreview (file) {
-      console.log('文件预览 ' + file.url)
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     }
