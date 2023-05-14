@@ -56,3 +56,7 @@ export function setHeight () {
     this.tableHeight = offsetTop
   }
 }
+
+export function isNum (s) {
+  return /^[0-9]*$/.test(s)
+}

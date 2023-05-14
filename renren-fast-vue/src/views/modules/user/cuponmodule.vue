@@ -2,10 +2,6 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
         <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
@@ -26,43 +22,45 @@
         prop="id"
         header-align="center"
         align="center"
-        label="">
+        label="ID">
       </el-table-column>
       <el-table-column
         prop="cuponName"
         header-align="center"
         align="center"
-        label="">
-      </el-table-column>
-      <el-table-column
-        prop="minPoint"
-        header-align="center"
-        align="center"
-        label="">
+        label="折扣券名称">
       </el-table-column>
       <el-table-column
         prop="cuponAmount"
         header-align="center"
         align="center"
-        label="">
+        label="优惠金额">
+      </el-table-column>
+      <el-table-column
+        prop="minPoint"
+        header-align="center"
+        align="center"
+        label="使用门槛">
       </el-table-column>
       <el-table-column
         prop="startTime"
         header-align="center"
         align="center"
-        label="">
+        :formatter="toFormatDate"
+        label="起始时间">
       </el-table-column>
       <el-table-column
         prop="endTime"
         header-align="center"
         align="center"
-        label="">
+        :formatter="toFormatDate"
+        label="结束时间">
       </el-table-column>
       <el-table-column
         prop="cuponRules"
         header-align="center"
         align="center"
-        label="">
+        label="使用规则">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -114,6 +112,12 @@
       this.getDataList()
     },
     methods: {
+      // 格式化日期
+      toFormatDate (row, column, cellValue, index) {
+        if (cellValue == null) return
+        let dates = new Date(cellValue).toJSON()
+        return new Date(+new Date(dates) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true

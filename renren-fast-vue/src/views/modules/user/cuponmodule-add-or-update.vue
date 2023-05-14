@@ -3,24 +3,33 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="" prop="cuponName">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="110px">
+    <el-form-item label="折扣券" prop="cuponName">
       <el-input v-model="dataForm.cuponName" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="minPoint">
+      <el-form-item label="优惠金额" prop="cuponAmount">
+        <el-input v-model="dataForm.cuponAmount" placeholder=""></el-input>
+      </el-form-item>
+    <el-form-item label="使用门槛金额" prop="minPoint">
       <el-input v-model="dataForm.minPoint" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="" prop="cuponAmount">
-      <el-input v-model="dataForm.cuponAmount" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="startTime">
-      <el-input v-model="dataForm.startTime" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="endTime">
-      <el-input v-model="dataForm.endTime" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="cuponRules">
-      <el-input v-model="dataForm.cuponRules" placeholder=""></el-input>
+      <el-form-item label="活动时间">
+        <el-col :span="11">
+          <el-form-item prop="startTime">
+            <el-date-picker type="datetime" placeholder="请选择折扣券开始日期" v-model="dataForm.startTime"
+                            style="width: 100%;"></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="2" align="middle">-</el-col>
+        <el-col :span="11">
+          <el-form-item prop="endTime">
+            <el-date-picker type="datetime" placeholder="请选择折扣券结束日期" v-model="dataForm.endTime"
+                            style="width: 100%;"></el-date-picker>
+          </el-form-item>
+        </el-col>
+      </el-form-item>
+    <el-form-item label="使用规则" prop="cuponRules">
+      <el-input type="textarea" v-model="dataForm.cuponRules" placeholder=""></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -46,22 +55,19 @@
         },
         dataRule: {
           cuponName: [
-            { required: true, message: '不能为空', trigger: 'blur' }
+            { required: true, message: '折扣券名称不能为空', trigger: 'blur' }
           ],
           minPoint: [
-            { required: true, message: '不能为空', trigger: 'blur' }
+            { required: true, message: '折扣券门槛金额不能为空', trigger: 'blur' }
           ],
           cuponAmount: [
-            { required: true, message: '不能为空', trigger: 'blur' }
+            { required: true, message: '折扣券优惠金额不能为空', trigger: 'blur' }
           ],
           startTime: [
-            { required: true, message: '不能为空', trigger: 'blur' }
+            { required: true, message: '开始时间不能为空', trigger: 'blur' }
           ],
           endTime: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-          ],
-          cuponRules: [
-            { required: true, message: '不能为空', trigger: 'blur' }
+            { required: true, message: '结束时间不能为空', trigger: 'blur' }
           ]
         }
       }

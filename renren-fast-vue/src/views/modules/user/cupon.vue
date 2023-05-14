@@ -2,10 +2,6 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
         <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
@@ -33,7 +29,13 @@
         prop="cuponName"
         header-align="center"
         align="center"
-        label="折扣券">
+        label="折扣券名称">
+      </el-table-column>
+      <el-table-column
+        prop="cuponAmount"
+        header-align="center"
+        align="center"
+        label="优惠金额">
       </el-table-column>
       <el-table-column
         prop="minPoint"
@@ -42,21 +44,17 @@
         label="使用门槛">
       </el-table-column>
       <el-table-column
-        prop="cuponAmount"
-        header-align="center"
-        align="center"
-        label="数量">
-      </el-table-column>
-      <el-table-column
         prop="startTime"
         header-align="center"
         align="center"
+        :formatter="toFormatDate"
         label="起始时间">
       </el-table-column>
       <el-table-column
         prop="endTime"
         header-align="center"
         align="center"
+        :formatter="toFormatDate"
         label="结束时间">
       </el-table-column>
       <el-table-column
@@ -70,12 +68,26 @@
         header-align="center"
         align="center"
         label="有效性">
+        <template slot-scope="scope">
+          <!-- scope.row 包含表格里当前行的所有数据 -->
+          <el-tag :type="scope.row.cuponStatu===0 ? 'default'
+                        :scope.row.cuponStatu===1 ? 'info'
+                        :scope.row.cuponStatu===2 ? 'success'
+                        : 'danger'">
+            {{
+              scope.row.cuponStatu === 0 ? '未开始'
+                : scope.row.cuponStatu === 1 ? '过期'
+                  : scope.row.cuponStatu === 2 ? '有效'
+                    : '已使用'
+            }}
+          </el-tag>
+        </template>
       </el-table-column>
       <el-table-column
         prop="cuponType"
         header-align="center"
         align="center"
-        label="类型">
+        label="折扣券类型">
       </el-table-column>
       <el-table-column
         prop="cuponRules"
@@ -110,103 +122,118 @@
 </template>
 
 <script>
-  import AddOrUpdate from './cupon-add-or-update'
-  export default {
-    data () {
-      return {
-        dataForm: {
-          key: ''
-        },
-        dataList: [],
-        pageIndex: 1,
-        pageSize: 10,
-        totalPage: 0,
-        dataListLoading: false,
-        dataListSelections: [],
-        addOrUpdateVisible: false
-      }
+import AddOrUpdate from './cupon-add-or-update'
+
+export default {
+  data () {
+    return {
+      dataForm: {
+        key: ''
+      },
+      dataList: [],
+      pageIndex: 1,
+      pageSize: 10,
+      totalPage: 0,
+      dataListLoading: false,
+      dataListSelections: [],
+      addOrUpdateVisible: false
+    }
+  },
+  components: {
+    AddOrUpdate
+  },
+  activated () {
+    this.getDataList()
+  },
+  methods: {
+    // 格式化日期
+    toFormatDate (row, column, cellValue, index) {
+      if (cellValue == null) return
+      let dates = new Date(cellValue).toJSON()
+      return new Date(+new Date(dates) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
     },
-    components: {
-      AddOrUpdate
+    // 获取数据列表
+    getDataList () {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/user/cupon/list'),
+        method: 'get',
+        params: this.$http.adornParams({
+          'page': this.pageIndex,
+          'limit': this.pageSize,
+          'key': this.dataForm.key
+        })
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.dataList = data.page.list
+          this.totalPage = data.page.totalCount
+        } else {
+          this.dataList = []
+          this.totalPage = 0
+        }
+        this.dataListLoading = false
+      })
     },
-    activated () {
+    // 给dataList排序
+    sortById (list, key) {
+      return list.sort(function (a, b) {
+        let x = a[key]
+        let y = b[key]
+        return ((x > y) ? -1 : (x < y) ? 1 : 0)
+      })
+    },
+    // 每页数
+    sizeChangeHandle (val) {
+      this.pageSize = val
+      this.pageIndex = 1
       this.getDataList()
     },
-    methods: {
-      // 获取数据列表
-      getDataList () {
-        this.dataListLoading = true
+    // 当前页
+    currentChangeHandle (val) {
+      this.pageIndex = val
+      this.getDataList()
+    },
+    // 多选
+    selectionChangeHandle (val) {
+      this.dataListSelections = val
+    },
+    // 新增 / 修改
+    addOrUpdateHandle (id) {
+      this.addOrUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs.addOrUpdate.init(id)
+      })
+    },
+    // 删除
+    deleteHandle (id) {
+      var ids = id ? [id] : this.dataListSelections.map(item => {
+        return item.id
+      })
+      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/user/cupon/list'),
-          method: 'get',
-          params: this.$http.adornParams({
-            'page': this.pageIndex,
-            'limit': this.pageSize,
-            'key': this.dataForm.key
-          })
+          url: this.$http.adornUrl('/user/cupon/delete'),
+          method: 'post',
+          data: this.$http.adornData(ids, false)
         }).then(({data}) => {
           if (data && data.code === 0) {
-            this.dataList = data.page.list
-            this.totalPage = data.page.totalCount
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
           } else {
-            this.dataList = []
-            this.totalPage = 0
+            this.$message.error(data.msg)
           }
-          this.dataListLoading = false
         })
-      },
-      // 每页数
-      sizeChangeHandle (val) {
-        this.pageSize = val
-        this.pageIndex = 1
-        this.getDataList()
-      },
-      // 当前页
-      currentChangeHandle (val) {
-        this.pageIndex = val
-        this.getDataList()
-      },
-      // 多选
-      selectionChangeHandle (val) {
-        this.dataListSelections = val
-      },
-      // 新增 / 修改
-      addOrUpdateHandle (id) {
-        this.addOrUpdateVisible = true
-        this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
-        })
-      },
-      // 删除
-      deleteHandle (id) {
-        var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.id
-        })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/user/cupon/delete'),
-            method: 'post',
-            data: this.$http.adornData(ids, false)
-          }).then(({data}) => {
-            if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList()
-                }
-              })
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        })
-      }
+      })
     }
   }
+}
 </script>
