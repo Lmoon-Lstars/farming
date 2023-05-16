@@ -1,12 +1,12 @@
 <template>
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+<!--      <el-form-item>-->
+<!--        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>-->
+<!--      </el-form-item>-->
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
+<!--        <el-button @click="getDataList()">查询</el-button>-->
+<!--        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
         <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
@@ -30,22 +30,10 @@
         label="ID">
       </el-table-column>
       <el-table-column
-        prop="avatarUrl"
+        prop="nickName"
         header-align="center"
         align="center"
-        label="头像URL">
-      </el-table-column>
-      <el-table-column
-        prop="openId"
-        header-align="center"
-        align="center"
-        label="用户辨识字段">
-      </el-table-column>
-      <el-table-column
-        prop="plantPoint"
-        header-align="center"
-        align="center"
-        label="种源点">
+        label="昵称">
       </el-table-column>
       <el-table-column
         prop="mobilePhone"
@@ -54,16 +42,28 @@
         label="电话号码">
       </el-table-column>
       <el-table-column
-        prop="nickName"
+        prop="plantPoint"
         header-align="center"
         align="center"
-        label="昵称">
+        label="种源点">
       </el-table-column>
       <el-table-column
         prop="registerTime"
         header-align="center"
         align="center"
+        :formatter="toFormatDate"
         label="注册时间">
+      </el-table-column>
+      <el-table-column
+        prop="userState"
+        header-align="center"
+        align="center"
+        label="用户状态">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.userState===0 ? 'danger':'success'">
+            {{ scope.row.userState === 0 ? '禁用' : '正常' }}
+          </el-tag>
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -115,6 +115,12 @@
       this.getDataList()
     },
     methods: {
+      // 日期格式化
+      toFormatDate (row, column, cellValue, index) {
+        if (cellValue == null) return
+        let dates = new Date(cellValue).toJSON()
+        return new Date(+new Date(dates) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
