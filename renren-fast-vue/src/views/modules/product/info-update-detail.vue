@@ -74,7 +74,7 @@
           <el-form-item label="商品描述" prop="description">
             <el-input type="textarea" v-model="dataForm.description" placeholder="请填写商品描述" :rows="6"></el-input>
           </el-form-item>
-          <el-form-item label="商品图片" prop="productPicFile">
+          <el-form-item label="重新上传图片" prop="productPicFile">
             <!--        <el-input v-model="dataForm.productPicFile" v-if="false"></el-input>-->
             <el-upload
               ref="uploadPic"
@@ -110,6 +110,7 @@ export default {
   name: 'info-update-detail',
   data () {
     return {
+      data: '',
       dataForm: {
         productId: '',
         productName: '',
@@ -158,9 +159,6 @@ export default {
         ],
         typeCode: [
           {required: true, message: '请选择产品类型', trigger: 'blur'}
-        ],
-        productPicFile: [
-          {required: true, message: '请上传商品图片', trigger: 'blur'}
         ]
       },
       productTypeList: [{
@@ -174,6 +172,11 @@ export default {
     this.getProductTypeList()
   },
   methods: {
+    // 初始化输入框
+    initInput () {
+      this.$refs.uploadPic.clearFiles()
+      this.dataForm.productPicFile = ''
+    },
     // 获取产品分类
     getProductTypeList () {
       this.$http({
@@ -207,6 +210,8 @@ export default {
       return new Promise((resolve, reject) => {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            console.log('上传照片')
+            console.log(this.dataForm.productPicFile)
             this.$http({
               url: this.$http.adornUrl(`/product/picinfo/receive`),
               method: 'post',
@@ -216,11 +221,11 @@ export default {
               }, true, 'x-www-form-urlencoded')
             }).then(({data}) => {
               if (data && data.code === 0) {
-                // this.$message({
-                //   message: '上传照片成功',
-                //   type: 'success',
-                //   duration: 1500
-                // })
+                this.$message({
+                  message: '上传照片成功',
+                  type: 'success',
+                  duration: 1500
+                })
               } else {
                 this.$message.error(data.msg)
               }
@@ -261,9 +266,7 @@ export default {
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
-              if (data.id) {
-                this.picUpload(data.id)
-              } else {
+              if (this.dataForm.productPicFile) {
                 this.picUpload(this.dataForm.productId)
               }
               this.$message({

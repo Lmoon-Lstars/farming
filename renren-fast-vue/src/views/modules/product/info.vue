@@ -468,28 +468,23 @@ export default {
           data: this.$http.adornData(ids, false)
         }).then(({data}) => {
           if (data && data.code === 0) {
-            this.$message({
-              message: '删除商品信息',
-              type: 'success',
-              duration: 1500
-            })
-          } else {
-            this.$message.error(data.msg)
-          }
-        })
-        // 删除照片
-        this.$http({
-          url: this.$http.adornUrl('/product/picinfo/delete'),
-          method: 'post',
-          data: this.$http.adornData(ids, false)
-        }).then(({data}) => {
-          if (data && data.code === 0) {
-            this.$message({
-              message: '操作成功',
-              type: 'success',
-              duration: 1500,
-              onClose: () => {
-                this.getDataList()
+            // 删除照片
+            this.$http({
+              url: this.$http.adornUrl('/product/picinfo/delete'),
+              method: 'post',
+              data: this.$http.adornData(ids, false)
+            }).then(({data}) => {
+              if (data && data.code === 0) {
+                this.$message({
+                  message: '操作成功',
+                  type: 'success',
+                  duration: 1500,
+                  onClose: () => {
+                    this.getDataList()
+                  }
+                })
+              } else {
+                this.$message.error(data.msg)
               }
             })
           } else {
@@ -497,6 +492,15 @@ export default {
           }
         })
       })
+    }
+  },
+  watch: {
+    isShowUpdateDetail (val) {
+      if (val === true) {
+        this.$nextTick(() => {
+          this.$refs.updateDetail.initInput()
+        })
+      }
     }
   }
 }

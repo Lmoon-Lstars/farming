@@ -79,8 +79,8 @@ export default {
         disPrice: '',
         startTime: '',
         endTime: '',
-        typeCode: '',
-        productPicFile: ''
+        typeCode: ''
+        // productPicFile: ''
       },
       isShowUpdateDetail: false,
       productTypeList: [],
@@ -147,25 +147,25 @@ export default {
               this.dataForm.typeCode = data.info.typeCode
             }
           })
-          this.$http({
-            url: this.$http.adornUrl(`/product/picinfo/getStream`),
-            method: 'get',
-            params: this.$http.adornParams(
-              {
-                'productId': this.dataForm.productId
-              }
-            ),
-            responseType: 'blob'
-          }).then(({data}) => {
-            this.dataForm.productPicFile = new File([data], 'screenshot.png', {type: 'image/jpeg'})
-          }).catch(error => {
-            console.log(error)
-            this.$message({
-              message: '系统错误，获取图片失败，请联系系统管理员！',
-              type: 'error',
-              center: true
-            })
-          })
+          // this.$http({
+          //   url: this.$http.adornUrl(`/product/picinfo/getStream`),
+          //   method: 'get',
+          //   params: this.$http.adornParams(
+          //     {
+          //       'productId': this.dataForm.productId
+          //     }
+          //   ),
+          //   responseType: 'blob'
+          // }).then(({data}) => {
+          //   this.dataForm.productPicFile = new File([data], 'screenshot.png', {type: 'image/jpeg'})
+          // }).catch(error => {
+          //   console.log(error)
+          //   this.$message({
+          //     message: '系统错误，获取图片失败，请联系系统管理员！',
+          //     type: 'error',
+          //     center: true
+          //   })
+          // })
         }
       })
     },
@@ -207,9 +207,7 @@ export default {
     // 详细修改
     detailedModifications () {
       this.visible = false
-      // this.$parent.isShowInfoAdd = true
       this.$parent.isShowUpdateDetail = true
-      // this.dataForm.status = 1
       eventBus.$emit('send', this.dataForm)
     },
     // 表单提交
